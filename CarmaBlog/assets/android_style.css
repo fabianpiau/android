@@ -1,0 +1,77 @@
+/*
+ * Hide all elements that are not useful in an Android device.
+ */
+
+#header {
+	display: none !important;
+}
+
+.sidebar {
+	display: none !important;
+}
+
+#footer {
+	display: none !important;
+}
+
+#footer-sidebar {
+	display: none !important;
+}
+
+
+#breadcrumbs {
+	display: none !important;
+}
+
+.yarpp-related {
+	display: none !important;
+}
+
+.share-print {
+	display: none !important;
+}
+
+.meta {
+	display: none !important;
+}
+
+.lang {
+	display: none !important;
+}
+
+.author {
+	display: none !important;
+}
+
+.ico-views {
+	display: none !important;
+}
+
+.date {
+	display: none !important;
+}
+
+
+html>body #page .container {
+	padding:0px !important;
+}
+
+#page{
+	width:100% !important;
+}
+
+div.sharedaddy li {
+	padding-left: 10px !important;
+}
+
+.navigation {
+	display: none !important;
+}
+
+#disqus_thread {
+	display: none !important;
+}
+
+div.info {
+	display: none !important;
+}
