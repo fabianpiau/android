@@ -15,8 +15,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.carmablog.R;
-import com.carmablog.retreiver.RetrievePageLocalTask;
-import com.carmablog.retreiver.RetrievePageRemoteTask;
+import com.carmablog.retriever.RetrievePageLocalTask;
+import com.carmablog.retriever.RetrievePageRemoteTask;
 import com.carmablog.url.URLCallMethod;
 import com.carmablog.url.URLContent;
 import com.carmablog.url.URLContentHistoryHelper;
