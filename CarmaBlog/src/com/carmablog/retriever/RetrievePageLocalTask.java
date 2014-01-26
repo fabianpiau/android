@@ -1,7 +1,7 @@
 package com.carmablog.retriever;
 
 import com.carmablog.activity.MainActivity;
-import com.carmablog.url.URLContent;
+import com.carmablog.url.history.URLContent;
 
 import android.os.AsyncTask;
 

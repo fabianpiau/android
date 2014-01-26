@@ -1,9 +1,11 @@
-package com.carmablog.url;
+package com.carmablog.url.history;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.carmablog.activity.MainActivity;
+import com.carmablog.url.common.URLCallMethod;
+import com.carmablog.url.common.URLConstant;
 
 /**
  * Helper to manage URL content history.
@@ -12,14 +14,6 @@ import com.carmablog.activity.MainActivity;
  */
 public class URLContentHistoryHelper {
 
-	// Patterns to recognize URLs from CarmaBlog
-	public static final CharSequence CARMABLOG_PATTERN = "fabianpiau.com";
-	private static final CharSequence COMMON_SHARING_PATTERN = "?share=";
-	private static final CharSequence LINKEDIN_SHARING_PATTERN = "linkedin.com";
-	private static final CharSequence FACEBOOK_SHARING_PATTERN = "facebook.com";
-	private static final CharSequence TWITTER_SHARING_PATTERN = "twitter.com";
-	private static final CharSequence GOOGLE_SHARING_PATTERN = "plus.google.com";
-	
 	// Parent main activity
     private MainActivity activity;
     
@@ -60,12 +54,12 @@ public class URLContentHistoryHelper {
 	 * Check if the URL is 100% a CarmaBlog one.
 	 */
 	public boolean isUrlMatchingForApp(final String url) {
-		return url.contains(CARMABLOG_PATTERN) 
-				&& !(url.contains(COMMON_SHARING_PATTERN))
-				  && !(url.contains(FACEBOOK_SHARING_PATTERN))
-				    && !(url.contains(TWITTER_SHARING_PATTERN))
-				      && !(url.contains(GOOGLE_SHARING_PATTERN))
-				        && !(url.contains(LINKEDIN_SHARING_PATTERN));
+		return url.contains(URLConstant.CARMABLOG_PATTERN) 
+				&& !(url.contains(URLConstant.COMMON_SHARING_PATTERN))
+				  && !(url.contains(URLConstant.FACEBOOK_SHARING_PATTERN))
+				    && !(url.contains(URLConstant.TWITTER_SHARING_PATTERN))
+				      && !(url.contains(URLConstant.GOOGLE_SHARING_PATTERN))
+				        && !(url.contains(URLConstant.LINKEDIN_SHARING_PATTERN));
 	}
 
 	/*
@@ -74,7 +68,7 @@ public class URLContentHistoryHelper {
 	 */
 	public boolean goBack(final URLCallMethod urlCallMethod) {
 		if (urlContentHistorys.isEmpty()) {
-			activity.loadCarmablogUrl(MainActivity.HOME_URL);
+			activity.loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
 		}
 		switch (urlCallMethod) {
 			case ON_RESUME:

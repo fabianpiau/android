@@ -1,4 +1,4 @@
-package com.carmablog.url;
+package com.carmablog.url.history;
 
 /**
  * Represent a URL with its content.

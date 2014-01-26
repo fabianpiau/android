@@ -49,7 +49,7 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, String> {
         	// Get the HTML code with Jsoup
         	doc = Jsoup.connect(url).get();
         } catch (Exception e) {
-        	Log.e("Jsoup", "Cannot retrieve document. Exception: " + e.getMessage());
+        	Log.e("Jsoup", "Cannot retrieve document. Check the URL: " + url + " is correct. Exception: " + e.getMessage());
         }
 		if (doc != null) {
 			// Add CSS to remove useless things

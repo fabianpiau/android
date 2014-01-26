@@ -1,4 +1,4 @@
-package com.carmablog.url;
+package com.carmablog.url.common;
 
 /**
  * To know the origin of the call.
