@@ -34,14 +34,15 @@ public class MainActivity extends Activity {
 	
 	// Menu
     private Menu menu;
-	private static final int HOME_ID = Menu.FIRST;
-	private static final int MANAGEMENT_ID = Menu.FIRST + 1;
-	private static final int AGILE_PROGRAMMING_ID = Menu.FIRST + 2;
-	private static final int TECHNOLOGY_ID = Menu.FIRST + 3;
-	private static final int LINUX_ID = Menu.FIRST + 4;
-	private static final int EVENT_ID = Menu.FIRST + 5;
-	private static final int SWITCH_LANG_EN_ID = Menu.FIRST + 6;
-	private static final int SWITCH_LANG_FR_ID = Menu.FIRST + 7;
+	private static final int SWITCH_LANG_EN_ID = R.id.menu_en;
+	private static final int SWITCH_LANG_FR_ID = R.id.menu_fr;
+	private static final int HOME_ID = R.id.menu_home;
+	private static final int MANAGEMENT_ID = Menu.FIRST;
+	private static final int AGILE_PROGRAMMING_ID = Menu.FIRST + 1;
+	private static final int TECHNOLOGY_ID = Menu.FIRST + 2;
+	private static final int LINUX_ID = Menu.FIRST + 3;
+	private static final int EVENT_ID = Menu.FIRST + 4;
+
 	
 	// Current state
 	private CharSequence currentLang;
@@ -168,27 +169,22 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		// Inflate the menu
-		// This adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-
-		menu.add(0, MANAGEMENT_ID, 0, R.string.menu_management).setShortcut('2', 'm').setIcon(R.drawable.management);
-		menu.add(0, AGILE_PROGRAMMING_ID, 0, R.string.menu_agile_programming).setShortcut('3', 'a').setIcon(R.drawable.agile_programming);
-		menu.add(0, TECHNOLOGY_ID, 0, R.string.menu_technology).setShortcut('4', 't').setIcon(R.drawable.technology);
-		menu.add(0, LINUX_ID, 0, R.string.menu_linux).setShortcut('5', 'l').setIcon(R.drawable.linux);
-		menu.add(0, EVENT_ID, 0, R.string.menu_event).setShortcut('6', 'e').setIcon(R.drawable.event);
-		
-		if (currentLang.equals(URLConstant.LANG_FR)) {
-			// English switcher
-			menu.add(0, SWITCH_LANG_EN_ID, 0, R.string.menu_en).setShortcut('7', 'n');
-		} else {
-			// French switcher		
-			menu.add(0, SWITCH_LANG_FR_ID, 0, R.string.menu_fr).setShortcut('8', 'f');
-		}
 		
 		// Set a reference to the menu for further modifications
 		this.menu = menu;
 		
+		// Inflate the menu
+		// This adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+
+		menu.add(0, MANAGEMENT_ID, 0, R.string.menu_management).setShortcut('1', 'm').setIcon(R.drawable.management);
+		menu.add(0, AGILE_PROGRAMMING_ID, 0, R.string.menu_agile_programming).setShortcut('2', 'a').setIcon(R.drawable.agile_programming);
+		menu.add(0, TECHNOLOGY_ID, 0, R.string.menu_technology).setShortcut('3', 't').setIcon(R.drawable.technology);
+		menu.add(0, LINUX_ID, 0, R.string.menu_linux).setShortcut('4', 'l').setIcon(R.drawable.linux);
+		menu.add(0, EVENT_ID, 0, R.string.menu_event).setShortcut('5', 'e').setIcon(R.drawable.event);
+		
+		changeMenuItemLang(currentLang);
+
 		return true;
 	}
 
@@ -207,6 +203,16 @@ public class MainActivity extends Activity {
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
 		super.onMenuItemSelected(featureId, item);
 		switch (item.getItemId()) {
+			case SWITCH_LANG_EN_ID:
+				currentLang = URLConstant.LANG_EN;
+				changeMenuItemLang(URLConstant.LANG_EN);
+				loadCarmablogUrl(currentUrl);
+				return true;
+			case SWITCH_LANG_FR_ID:
+				currentLang = URLConstant.LANG_FR;
+				changeMenuItemLang(URLConstant.LANG_FR);
+				loadCarmablogUrl(currentUrl);
+				return true;
 			case HOME_ID:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
 				return true;
@@ -225,16 +231,6 @@ public class MainActivity extends Activity {
 			case EVENT_ID:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "event" + URLConstant.SEPARATOR_URL);
 				return true;
-			case SWITCH_LANG_EN_ID:
-				currentLang = URLConstant.LANG_EN;
-				changeMenuItemLang(URLConstant.LANG_EN);
-				loadCarmablogUrl(currentUrl);
-				return true;
-			case SWITCH_LANG_FR_ID:
-				currentLang = URLConstant.LANG_FR;
-				changeMenuItemLang(URLConstant.LANG_FR);
-				loadCarmablogUrl(currentUrl);
-				return true;
 			default:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
 				return true;
@@ -245,17 +241,17 @@ public class MainActivity extends Activity {
 	 * Change the item to change language.
 	 */
 	private void changeMenuItemLang(CharSequence lang) {
-		if (lang.equals(URLConstant.LANG_EN)) {
-			// Display the item to go to the French version
-			menu.removeItem(SWITCH_LANG_EN_ID);
-			menu.add(0, SWITCH_LANG_FR_ID, 0, R.string.menu_fr).setShortcut('8', 'f');
+		final MenuItem langEnMenuItem = menu.findItem(R.id.menu_en);
+		final MenuItem langFrMenuItem = menu.findItem(R.id.menu_fr);
+		if (currentLang.equals(URLConstant.LANG_FR)) {
+			// English switcher
+			langEnMenuItem.setVisible(true);
+			langFrMenuItem.setVisible(false);
+		} else {
+			// French switcher	
+			langEnMenuItem.setVisible(false);
+			langFrMenuItem.setVisible(true);
 		}
-		if (lang.equals(URLConstant.LANG_FR)) {
-			// Display the item to go to the English version
-			menu.removeItem(SWITCH_LANG_FR_ID);
-			menu.add(0, SWITCH_LANG_EN_ID, 0, R.string.menu_en).setShortcut('7', 'n');
-		}
-		
 	}
 
 	public WebView getMyWebView() {
