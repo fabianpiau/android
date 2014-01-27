@@ -25,4 +25,9 @@ public class URLConstant {
 	public static final CharSequence BASE_URL = "http:" + SEPARATOR_URL + SEPARATOR_URL;
 	public static final CharSequence BASE_CARMABLOG_URL = BASE_URL + "blog." + CARMABLOG_PATTERN;
 	public static final String HOME_CARMABLOG_URL = BASE_CARMABLOG_URL + SEPARATOR_URL + LANG_PATTERN + SEPARATOR_URL;
+	
+	// Search URLs
+	public static final CharSequence QUERY_SEARCH_TERM = "?s=";
+	public static final CharSequence QUERY_SEARCH_ACTION = "&submit=Rechercher";
+
 }

@@ -1,22 +1,79 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <item
-        android:id="@+id/menu_en"
-        android:orderInCategory="50"
-        android:showAsAction="always"
-        android:title="@string/menu_en"/>
+    <!-- Search box -->
+    <item android:id="@+id/menu_search"
+	    android:showAsAction="always|collapseActionView"
+	    android:title="@string/menu_search"
+	    android:icon="@drawable/search"
+	    android:actionViewClass="android.widget.SearchView"/>
 
-    <item
-        android:id="@+id/menu_fr"
-        android:orderInCategory="50"
-        android:showAsAction="always"
-        android:title="@string/menu_fr"/>
-    
+    <!-- Home -->
     <item
         android:id="@+id/menu_home"
-        android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/menu_home"
 		android:icon="@drawable/home"/>
-        
+    
+    <!--  Language switcher -->
+    <item
+        android:id="@+id/menu_en"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_en"
+        android:icon="@drawable/lang"/>
+    
+    <item
+        android:id="@+id/menu_fr"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_fr"
+        android:icon="@drawable/lang"/>
+    
+    <!--  Post categories -->
+    <item
+	    android:title="@string/menu_categories"
+	    android:id="@+id/menu_categories"
+	    android:showAsAction="ifRoom|withText"
+	    android:icon="@drawable/categories">
+	    <menu>
+		    <item
+		        android:id="@+id/menu_management"
+		        android:showAsAction="never"
+		        android:title="@string/menu_management"
+		        android:alphabeticShortcut="m"
+		        android:numericShortcut="1"
+		        android:icon="@drawable/management"/>
+		    
+		    <item
+		        android:id="@+id/menu_agile_programming"
+		        android:showAsAction="never"
+		        android:title="@string/menu_agile_programming"
+		        android:alphabeticShortcut="a"
+		        android:numericShortcut="2"
+		        android:icon="@drawable/agile_programming"/>
+		    
+		    <item
+		        android:id="@+id/menu_technology"
+		        android:showAsAction="never"
+		        android:title="@string/menu_technology"
+		        android:alphabeticShortcut="t"
+		        android:numericShortcut="3"
+		        android:icon="@drawable/technology"/>
+		
+		    <item
+		        android:id="@+id/menu_linux"
+		        android:showAsAction="never"
+		        android:title="@string/menu_linux"
+		        android:alphabeticShortcut="l"
+		        android:numericShortcut="4"
+		        android:icon="@drawable/linux"/>
+		    
+		    <item
+		        android:id="@+id/menu_event"
+		        android:showAsAction="never"
+		        android:title="@string/menu_event"
+		        android:alphabeticShortcut="e"
+		        android:numericShortcut="5"
+		        android:icon="@drawable/event"/>
+		</menu>
+	</item>
+    
 </menu>

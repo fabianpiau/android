@@ -3,15 +3,18 @@
 
     <string name="app_name" translatable="false">CarmaBlog</string>
     
+    <string name="menu_search">Search</string>
     <string name="menu_home">Home</string>
+    
+    <string name="menu_fr">In french</string>
+    <string name="menu_en">In english</string>
+    
+    <string name="menu_categories">Categories</string>
     <string name="menu_management">Management</string>
     <string name="menu_agile_programming">Agile Programming</string>
     <string name="menu_technology">Technology</string>
     <string name="menu_linux">Linux</string>
     <string name="menu_event">Event</string>
-    
-    <string name="menu_fr">In french</string>
-    <string name="menu_en">In english</string>
        
     <string name="message_loading">Loading&#8230;</string>
     <string name="message_timeout">Unable to connect to this page. Connection timeout&#8230;</string>

@@ -54,14 +54,6 @@ body {
 	display: none !important;
 }
 
-.ico-views {
-	display: none !important;
-}
-
-.date {
-	display: none !important;
-}
-
 html>body #page .container {
 	padding:0px !important;
 }
@@ -83,5 +75,9 @@ div.sharedaddy li {
 }
 
 #infoDisqus {
+	display: none !important;
+}
+
+#searchform {
 	display: none !important;
 }

@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.SearchView;
 
 import com.carmablog.R;
 import com.carmablog.retriever.RetrievePageLocalTask;
@@ -34,17 +36,8 @@ public class MainActivity extends Activity {
 	
 	// Menu
     private Menu menu;
-	private static final int SWITCH_LANG_EN_ID = R.id.menu_en;
-	private static final int SWITCH_LANG_FR_ID = R.id.menu_fr;
-	private static final int HOME_ID = R.id.menu_home;
-	private static final int MANAGEMENT_ID = Menu.FIRST;
-	private static final int AGILE_PROGRAMMING_ID = Menu.FIRST + 1;
-	private static final int TECHNOLOGY_ID = Menu.FIRST + 2;
-	private static final int LINUX_ID = Menu.FIRST + 3;
-	private static final int EVENT_ID = Menu.FIRST + 4;
 
-	
-	// Current state
+    // Current state
 	private CharSequence currentLang;
 	private String currentUrl;
 	
@@ -166,6 +159,7 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -177,15 +171,40 @@ public class MainActivity extends Activity {
 		// This adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		menu.add(0, MANAGEMENT_ID, 0, R.string.menu_management).setShortcut('1', 'm').setIcon(R.drawable.management);
-		menu.add(0, AGILE_PROGRAMMING_ID, 0, R.string.menu_agile_programming).setShortcut('2', 'a').setIcon(R.drawable.agile_programming);
-		menu.add(0, TECHNOLOGY_ID, 0, R.string.menu_technology).setShortcut('3', 't').setIcon(R.drawable.technology);
-		menu.add(0, LINUX_ID, 0, R.string.menu_linux).setShortcut('4', 'l').setIcon(R.drawable.linux);
-		menu.add(0, EVENT_ID, 0, R.string.menu_event).setShortcut('5', 'e').setIcon(R.drawable.event);
-		
+		// Search menu (only if device is Honeycomb or newer)
+		MenuItem searchItem = menu.findItem(R.id.menu_search);
+		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= 11) {
+		    
+		    SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		    searchView.setSubmitButtonEnabled(true);
+		    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+		    	  	@Override
+		    	    public boolean onQueryTextChange(String newText) {
+			    	    return false;
+		    	    }
+			        @Override
+			        public boolean onQueryTextSubmit(String query) {
+			        	search(query);
+			            return false;
+			        }
+		    });
+		} else {
+			searchItem.setVisible(false);
+		}
+	    
 		changeMenuItemLang(currentLang);
 
 		return true;
+	}
+	
+	/*
+	 * Launch query on the WordPress search feature.
+	 */
+	private void search(final String query) {
+		final String searchUrl = URLConstant.HOME_CARMABLOG_URL + 
+								   URLConstant.QUERY_SEARCH_TERM + query.replace(" ", "+") + 
+									 URLConstant.QUERY_SEARCH_ACTION;
+		loadCarmablogUrl(searchUrl);
 	}
 
 	@Override
@@ -203,32 +222,34 @@ public class MainActivity extends Activity {
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
 		super.onMenuItemSelected(featureId, item);
 		switch (item.getItemId()) {
-			case SWITCH_LANG_EN_ID:
+			case R.id.menu_search:
+				return true;
+			case R.id.menu_home:
+				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
+				return true;
+			case R.id.menu_en:
 				currentLang = URLConstant.LANG_EN;
 				changeMenuItemLang(URLConstant.LANG_EN);
 				loadCarmablogUrl(currentUrl);
 				return true;
-			case SWITCH_LANG_FR_ID:
+			case R.id.menu_fr:
 				currentLang = URLConstant.LANG_FR;
 				changeMenuItemLang(URLConstant.LANG_FR);
 				loadCarmablogUrl(currentUrl);
 				return true;
-			case HOME_ID:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
-				return true;
-			case MANAGEMENT_ID:
+			case R.id.menu_management:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "management" + URLConstant.SEPARATOR_URL);
 				return true;
-			case AGILE_PROGRAMMING_ID:
+			case R.id.menu_agile_programming:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "agile-programming" + URLConstant.SEPARATOR_URL);
 				return true;
-			case TECHNOLOGY_ID:
+			case R.id.menu_technology:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "technology" + URLConstant.SEPARATOR_URL);
 				return true;
-			case LINUX_ID:
+			case R.id.menu_linux:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "linux" + URLConstant.SEPARATOR_URL);
 				return true;
-			case EVENT_ID:
+			case R.id.menu_event:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "event" + URLConstant.SEPARATOR_URL);
 				return true;
 			default:
