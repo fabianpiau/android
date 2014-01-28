@@ -224,6 +224,8 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 			case R.id.menu_search:
 				return true;
+			case R.id.menu_categories:
+				return true;
 			case R.id.menu_home:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
 				return true;
