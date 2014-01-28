@@ -17,6 +17,6 @@
     <string name="menu_event">Event</string>
        
     <string name="message_loading">Loading&#8230;</string>
-    <string name="message_timeout">Unable to connect to this page. Connection timeout&#8230;</string>
+    <string name="message_timeout">Unable to connect to this page.\nConnection timeout&#8230;</string>
     
 </resources>

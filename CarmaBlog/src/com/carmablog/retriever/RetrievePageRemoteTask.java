@@ -69,6 +69,7 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, String> {
 			// Probably a connection error
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
+					activity.getMyWebView().loadUrl("file:///android_asset/connection_timeout.html");
 					Toast.makeText(activity.getApplicationContext(), R.string.message_timeout, Toast.LENGTH_LONG).show();
 				}
 			});
