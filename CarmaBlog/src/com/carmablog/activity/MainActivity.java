@@ -328,7 +328,7 @@ public class MainActivity extends Activity {
 	    	}
 	    }
 
-		final Intent chooserIntent = Intent.createChooser(sharingIntents.remove(0), getResources().getText(R.string.share_title));
+		final Intent chooserIntent = Intent.createChooser(sharingIntents.remove(0), getString(R.string.share_title));
 		chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, sharingIntents.toArray(new Parcelable[]{}));
 		return chooserIntent;
 	}
