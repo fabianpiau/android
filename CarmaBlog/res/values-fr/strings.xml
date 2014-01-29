@@ -3,6 +3,7 @@
 
     <string name="menu_search">Rechercher</string>
     <string name="menu_home">Accueil</string>
+    <string name="menu_share">Partager</string>
     
     <string name="menu_fr">En fran&#231;ais</string>
     <string name="menu_en">En anglais</string>
@@ -14,6 +15,7 @@
     <string name="menu_linux">Linux</string>
     <string name="menu_event">Ev&#233;nement</string>
     
+    <string name="share_title">Partager cet article avec&#8230;</string>
     <string name="message_loading">Chargement en cours&#8230;</string>
     <string name="message_timeout">Impossible d\'acc&#233;der &#224; cette page.\nD&#233;lai de connexion d&#233;pass&#233;&#8230;</string>
     

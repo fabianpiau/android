@@ -28,16 +28,6 @@ public class URLContentHistoryHelper {
 	}
 
 	/*
-	 * Add a URL and its content in the navigation history.
-	 */
-	public void addUrlContentInHistory(final String url, final String content) {
-		final URLContent urlContent = new URLContent();
-		urlContent.setUrl(url);
-		urlContent.setContent(content);
-		addUrlContentInHistory(urlContent);		
-	}
-	
-	/*
 	 * Add a URLContent in the navigation history.
 	 */
 	public void addUrlContentInHistory(final URLContent urlContent) {

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.carmablog.R;
 import com.carmablog.activity.MainActivity;
+import com.carmablog.url.history.URLContent;
 
 /**
  * Retrieve the whole page from the Internet then display it in the WebView.
@@ -17,7 +18,7 @@ import com.carmablog.activity.MainActivity;
  * @author fpiau
  *
  */
-public class RetrievePageRemoteTask extends AsyncTask<String, Void, String> {
+public class RetrievePageRemoteTask extends AsyncTask<String, Void, URLContent> {
 
 	// Parent main activity
     private MainActivity activity;
@@ -42,7 +43,7 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, String> {
 	}
 
 	@Override
-    public String doInBackground(final String... urls) {
+    public URLContent doInBackground(final String... urls) {
 		final String url = urls[0];
     	Document doc = null;
         try {
@@ -54,16 +55,20 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, String> {
 		if (doc != null) {
 			// Add CSS to remove useless things
 			doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "android_style.css");
-			final String htmlData = doc.outerHtml();
+			// Get all info of the page
+			final URLContent urlContent = new URLContent();
+			urlContent.setUrl(url);
+			urlContent.setHtmlContent(doc.outerHtml());
+			urlContent.setTitle(doc.body().select("h2").first().text());
 			// Add the URL and its content in the navigation history
-			activity.getUrlContentHistoryHelper().addUrlContentInHistory(url, htmlData);
+			activity.getUrlContentHistoryHelper().addUrlContentInHistory(urlContent);
 			// Update the WebView content on the UI thread
 			activity.runOnUiThread(new Runnable() {
 				public void run() {
-				activity.getMyWebView().loadDataWithBaseURL("file:///android_asset/", htmlData, "text/html", "UTF-8", null);
+					activity.getMyWebView().loadDataWithBaseURL("file:///android_asset/", urlContent.getHtmlContent(), "text/html", "UTF-8", null);
 				}
 			});
-			
+			return urlContent;
 		} else {
 			// An error occurred with Jsoup
 			// Probably a connection error
@@ -79,12 +84,14 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, String> {
     }
 
 	@Override
-	protected void onPostExecute(final String result) {
+	protected void onPostExecute(final URLContent result) {
 		super.onPostExecute(result);
 		if (progressDialog.isShowing()) {
 			// Hide progress dialog
 			progressDialog.dismiss();
 	    }
+		// Set the result
+		activity.setCurrentUrlContent(result);
 	}
     
 }

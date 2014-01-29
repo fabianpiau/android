@@ -5,6 +5,7 @@
     
     <string name="menu_search">Search</string>
     <string name="menu_home">Home</string>
+    <string name="menu_share">Share</string>
     
     <string name="menu_fr">In french</string>
     <string name="menu_en">In english</string>
@@ -15,7 +16,8 @@
     <string name="menu_technology">Technology</string>
     <string name="menu_linux">Linux</string>
     <string name="menu_event">Event</string>
-       
+    
+    <string name="share_title">Share this post with&#8230;</string>
     <string name="message_loading">Loading&#8230;</string>
     <string name="message_timeout">Unable to connect to this page.\nConnection timeout&#8230;</string>
     

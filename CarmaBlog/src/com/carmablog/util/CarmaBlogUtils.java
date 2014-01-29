@@ -5,11 +5,11 @@ import java.util.Locale;
 import com.carmablog.url.common.URLConstant;
 
 /**
- * Do some operations on languages.
+ * Utilities class.
  * @author fpiau
  *
  */
-public final class LanguageUtils {
+public final class CarmaBlogUtils {
 
 	/*
 	 * Return true is the language is French (settings of the device).
@@ -73,5 +73,29 @@ public final class LanguageUtils {
 		return formatedUrl;
 	}
 	
-	
+	/*
+	 * Return true is the URL is a link to an article.
+	 */
+	public static boolean isUrlMatchingSinglePost(final String url) {
+		// check if the URL contains a date in the URL with the /YYYY/MM/DD/ format
+		return url.matches(".*" + URLConstant.CARMABLOG_PATTERN + "(/fr|/en)?/(20[0-9]{2})/([0-1][0-9])/([0-3][0-9])/.*");
+	}
+
+	/*
+	 * Check if the app is one we want to use.
+	 * Should be a compatible client or the official app among:
+	 * Twitter, LinkedIn, Facebook, Google Plus, Viadeo & Email.
+	 */
+	public static boolean isPackageMatchingAppForSharing(final String packageNameApp) {
+		return (packageNameApp.contains("twitter") 
+				|| packageNameApp.contains("linkedin") 
+				 || packageNameApp.contains("facebook") 
+				  || packageNameApp.contains("google.android.apps.plus")
+				   || packageNameApp.contains("twidroid")
+				    || packageNameApp.contains("tweetcaster")
+					 || packageNameApp.contains("thedeck")
+					  || packageNameApp.contains("email")
+					   || packageNameApp.contains("viadeo"));
+	}
+
 }

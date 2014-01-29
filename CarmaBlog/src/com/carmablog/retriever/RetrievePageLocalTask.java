@@ -31,10 +31,17 @@ public class RetrievePageLocalTask extends AsyncTask<URLContent, Void, URLConten
 		// Update the WebView content on the UI thread
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-			activity.getMyWebView().loadDataWithBaseURL("file:///android_asset/", urlContent.getContent(), "text/html", "UTF-8", null);
+				activity.getMyWebView().loadDataWithBaseURL("file:///android_asset/", urlContent.getHtmlContent(), "text/html", "UTF-8", null);
 			}
 		});
-		return null;
+		return urlContent;
     }
+	
+	@Override
+	protected void onPostExecute(final URLContent result) {
+		super.onPostExecute(result);
+		// Set the result
+		activity.setCurrentUrlContent(result);
+	}
     
 }

@@ -7,20 +7,36 @@ package com.carmablog.url.history;
  */
 public class URLContent {
 	
+	// URL of the page
 	private String url;
-	private String content;
+		
+	// Title of the page
+	private String title;
 	
+	// Whole HTML code
+	private String htmlContent;
+
 	public String getUrl() {
 		return url;
 	}
 	public void setUrl(final String url) {
 		this.url = url;
 	}
-	public String getContent() {
-		return content;
+	
+	public String getTitle() {
+		return title;
 	}
-	public void setContent(final String content) {
-		this.content = content;
+	
+	public void setTitle(final String title) {
+		this.title = title;
+	}
+	
+	public String getHtmlContent() {
+		return htmlContent;
+	}
+	
+	public void setHtmlContent(final String htmlContent) {
+		this.htmlContent = htmlContent;
 	}
 
 }

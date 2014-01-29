@@ -1,10 +1,18 @@
 package com.carmablog.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.protocol.HTTP;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,7 +29,7 @@ import com.carmablog.url.common.URLCallMethod;
 import com.carmablog.url.common.URLConstant;
 import com.carmablog.url.history.URLContent;
 import com.carmablog.url.history.URLContentHistoryHelper;
-import com.carmablog.util.LanguageUtils;
+import com.carmablog.util.CarmaBlogUtils;
 
 /**
  * CarmaBlog Main Activity.
@@ -39,7 +47,7 @@ public class MainActivity extends Activity {
 
     // Current state
 	private CharSequence currentLang;
-	private String currentUrl;
+	private URLContent currentUrlContent;
 	
 	// URL history helper
 	private URLContentHistoryHelper urlContentHistoryHelper;
@@ -92,7 +100,7 @@ public class MainActivity extends Activity {
 	 * By default, depending on the device settings
 	 */
 	private void initializeLanguageFromDevice() {
-		if (LanguageUtils.isDeviceInFrench()) {
+		if (CarmaBlogUtils.isDeviceInFrench()) {
 			currentLang = URLConstant.LANG_FR;
 		} else {
 			currentLang = URLConstant.LANG_EN;
@@ -125,8 +133,9 @@ public class MainActivity extends Activity {
 		if (currentLang == null) {
 			initializeLanguageFromDevice();
 		}
-		final String localizedUrl = LanguageUtils.localizeUrl(url, currentLang);
+		final String localizedUrl = CarmaBlogUtils.localizeUrl(url, currentLang);
 		if (localizedUrl != null) {
+			// Load the page
 			loadUrlInBackground(localizedUrl);
 		}
 	}
@@ -146,16 +155,24 @@ public class MainActivity extends Activity {
 	 * The call is asynchronous.
 	 */
 	private void loadUrlInBackground(final String url) {
-		// Look in the history in case the page is already loaded...
+		// Look in the history in case the page has been loaded before...
 		final URLContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
 		if (urlContent != null) {
-			currentUrl = urlContent.getUrl();
+			// Yeah, it will be faster
 			loadCarmablogUrl(urlContent);
 		} else {
 			// First time
-			// Async call
-			currentUrl = url;
+			// Do an async call
 			new RetrievePageRemoteTask(this).execute(url);
+		}
+		if (menu != null) {
+			// Show the share button only if we are displaying a single post
+			MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
+			if (CarmaBlogUtils.isUrlMatchingSinglePost(url)) {
+				shareMenuItem.setVisible(true);
+			} else {
+				shareMenuItem.setVisible(false);
+			}
 		}
 	}
 
@@ -170,6 +187,10 @@ public class MainActivity extends Activity {
 		// Inflate the menu
 		// This adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		
+		// Make the share button invisible
+		final MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
+		shareMenuItem.setVisible(false);
 
 		// Search menu (only if device is Honeycomb or newer)
 		MenuItem searchItem = menu.findItem(R.id.menu_search);
@@ -224,6 +245,9 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 			case R.id.menu_search:
 				return true;
+			case R.id.menu_share:
+			    startActivity(defineSharingIntent());
+				return true;
 			case R.id.menu_categories:
 				return true;
 			case R.id.menu_home:
@@ -232,12 +256,12 @@ public class MainActivity extends Activity {
 			case R.id.menu_en:
 				currentLang = URLConstant.LANG_EN;
 				changeMenuItemLang(URLConstant.LANG_EN);
-				loadCarmablogUrl(currentUrl);
+				loadCarmablogUrl(currentUrlContent.getUrl());
 				return true;
 			case R.id.menu_fr:
 				currentLang = URLConstant.LANG_FR;
 				changeMenuItemLang(URLConstant.LANG_FR);
-				loadCarmablogUrl(currentUrl);
+				loadCarmablogUrl(currentUrlContent.getUrl());
 				return true;
 			case R.id.menu_management:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "management" + URLConstant.SEPARATOR_URL);
@@ -276,6 +300,38 @@ public class MainActivity extends Activity {
 			langFrMenuItem.setVisible(true);
 		}
 	}
+	
+	/*
+	 * Define sharing intent for the current post.
+	 */
+	private Intent defineSharingIntent() {
+		final Intent globalSharingIntent = new Intent();
+		globalSharingIntent.setType(HTTP.PLAIN_TEXT_TYPE);
+		globalSharingIntent.setAction(Intent.ACTION_SEND);
+		
+		final PackageManager packageManager = myWebView.getContext().getPackageManager();
+	    final List<ResolveInfo> activities = packageManager.queryIntentActivities(globalSharingIntent, 0);
+	    
+		final List<Intent> sharingIntents = new ArrayList<Intent>();
+		final String shareBody = currentUrlContent.getTitle() + " - " + currentUrlContent.getUrl();
+		
+	    for (final ResolveInfo app : activities) {
+			final Intent sharingIntent = new Intent();
+			sharingIntent.setType(HTTP.PLAIN_TEXT_TYPE);
+			sharingIntent.setAction(Intent.ACTION_SEND);
+	    	sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.id.menu_share));
+	    	final String packageName = app.activityInfo.packageName;
+	    	if (CarmaBlogUtils.isPackageMatchingAppForSharing(packageName)) {
+		        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+		        sharingIntent.setPackage(packageName);
+		        sharingIntents.add(sharingIntent);
+	    	}
+	    }
+
+		final Intent chooserIntent = Intent.createChooser(sharingIntents.remove(0), getResources().getText(R.string.share_title));
+		chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, sharingIntents.toArray(new Parcelable[]{}));
+		return chooserIntent;
+	}
 
 	public WebView getMyWebView() {
 		return myWebView;
@@ -284,5 +340,9 @@ public class MainActivity extends Activity {
 	public URLContentHistoryHelper getUrlContentHistoryHelper() {
 		return urlContentHistoryHelper;
 	}
-		
+
+	public void setCurrentUrlContent(final URLContent currentUrlContent) {
+		this.currentUrlContent = currentUrlContent;
+	}
+	
 }
