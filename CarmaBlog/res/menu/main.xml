@@ -38,7 +38,7 @@
     <item
 	    android:title="@string/menu_categories"
 	    android:id="@+id/menu_categories"
-	    android:showAsAction="ifRoom|withText"
+	    android:showAsAction="never"
 	    android:icon="@drawable/categories">
 	    <menu>
 		    <item
