@@ -24,7 +24,13 @@ public class URLConstant {
 	public static final String SEPARATOR_URL = "/";
 	public static final CharSequence BASE_URL = "http:" + SEPARATOR_URL + SEPARATOR_URL;
 	public static final CharSequence BASE_CARMABLOG_URL = BASE_URL + "blog." + CARMABLOG_PATTERN;
+	// Full URL
 	public static final String HOME_CARMABLOG_URL = BASE_CARMABLOG_URL + SEPARATOR_URL + LANG_PATTERN + SEPARATOR_URL;
+	public static final String CATEGORY_MANAGEMENT_URL = HOME_CARMABLOG_URL + "management" + SEPARATOR_URL;
+	public static final String CATEGORY_AGILE_PROGRAMMING_URL = HOME_CARMABLOG_URL + "agile-programming" + SEPARATOR_URL;
+	public static final String CATEGORY_TECHNOLOGY_URL = HOME_CARMABLOG_URL + "technology" + SEPARATOR_URL;
+	public static final String CATEGORY_LINUX_URL = HOME_CARMABLOG_URL + "linux" + SEPARATOR_URL;
+	public static final String CATEGORY_EVENT_URL = HOME_CARMABLOG_URL + "event" + SEPARATOR_URL;
 	
 	// Search URLs
 	public static final CharSequence QUERY_SEARCH_TERM = "?s=";

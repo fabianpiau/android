@@ -284,19 +284,19 @@ public class MainActivity extends Activity {
 				loadCarmablogUrl(currentUrlContent.getUrl());
 				return true;
 			case R.id.menu_management:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "management" + URLConstant.SEPARATOR_URL);
+				loadCarmablogUrl(URLConstant.CATEGORY_MANAGEMENT_URL);
 				return true;
 			case R.id.menu_agile_programming:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "agile-programming" + URLConstant.SEPARATOR_URL);
+				loadCarmablogUrl(URLConstant.CATEGORY_AGILE_PROGRAMMING_URL);
 				return true;
 			case R.id.menu_technology:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "technology" + URLConstant.SEPARATOR_URL);
+				loadCarmablogUrl(URLConstant.CATEGORY_TECHNOLOGY_URL);
 				return true;
 			case R.id.menu_linux:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "linux" + URLConstant.SEPARATOR_URL);
+				loadCarmablogUrl(URLConstant.CATEGORY_LINUX_URL);
 				return true;
 			case R.id.menu_event:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL + "event" + URLConstant.SEPARATOR_URL);
+				loadCarmablogUrl(URLConstant.CATEGORY_EVENT_URL);
 				return true;
 			default:
 				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
