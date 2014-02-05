@@ -58,6 +58,10 @@ html>body #page .container {
 	padding:0px !important;
 }
 
+html>body #footer-sidebar .container {
+	padding:0px !important;
+}
+
 #page{
 	width:100% !important;
 }
