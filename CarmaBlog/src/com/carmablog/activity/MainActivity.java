@@ -46,9 +46,11 @@ public class MainActivity extends Activity {
 	// Menu
     private Menu menu;
 
-    // Current state
+    // Current state and preferences
 	private String currentLang;
 	private URLContent currentUrlContent;
+	private SharedPreferences preferences;
+	private static final String KEY_CURRENT_LANG = "currentLang";
 	
 	// URL history helper
 	private URLContentHistoryHelper urlContentHistoryHelper;
@@ -92,8 +94,8 @@ public class MainActivity extends Activity {
 		myWebView.setWebViewClient(myWebViewClient);
 		
 		// Restore language from preferences
-		final SharedPreferences settings = getPreferences(MODE_PRIVATE);
-	    currentLang = settings.getString("currentLang", null);
+		preferences = getPreferences(MODE_PRIVATE);
+		currentLang = preferences.getString(KEY_CURRENT_LANG, null);
 	    if (currentLang == null) {
 	    	// Nothing found in preference
 	    	// By default use the language of the device
@@ -109,10 +111,8 @@ public class MainActivity extends Activity {
 		super.onStop();
 		
 		// Save last language used in preferences for the next time
-		final SharedPreferences settings = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putString("currentLang", currentLang);
-		editor.commit();
+		final SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(KEY_CURRENT_LANG, currentLang).commit();
     }
 
 	/*
