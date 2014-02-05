@@ -19,8 +19,8 @@ public class URLConstant {
 	
 	// Patterns to process URLs
 	public static final CharSequence LANG_PATTERN = "[LANG]";
-	public static final CharSequence LANG_FR = "fr";
-	public static final CharSequence LANG_EN = "en";
+	public static final String LANG_FR = "fr";
+	public static final String LANG_EN = "en";
 	public static final String SEPARATOR_URL = "/";
 	public static final CharSequence BASE_URL = "http:" + SEPARATOR_URL + SEPARATOR_URL;
 	public static final CharSequence BASE_CARMABLOG_URL = BASE_URL + "blog." + CARMABLOG_PATTERN;

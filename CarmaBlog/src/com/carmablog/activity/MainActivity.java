@@ -8,6 +8,7 @@ import org.apache.http.protocol.HTTP;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -46,7 +47,7 @@ public class MainActivity extends Activity {
     private Menu menu;
 
     // Current state
-	private CharSequence currentLang;
+	private String currentLang;
 	private URLContent currentUrlContent;
 	
 	// URL history helper
@@ -90,10 +91,29 @@ public class MainActivity extends Activity {
 		};
 		myWebView.setWebViewClient(myWebViewClient);
 		
+		// Restore language from preferences
+		final SharedPreferences settings = getPreferences(MODE_PRIVATE);
+	    currentLang = settings.getString("currentLang", null);
+	    if (currentLang == null) {
+	    	// Nothing found in preference
+	    	// By default use the language of the device
+	    	initializeLanguageFromDevice();
+	    }
+	    
 		// Load the homepage
-		initializeLanguageFromDevice();
 		loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
 	}
+	
+    @Override
+    protected void onStop(){
+		super.onStop();
+		
+		// Save last language used in preferences for the next time
+		final SharedPreferences settings = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("currentLang", currentLang);
+		editor.commit();
+    }
 
 	/*
 	 * Set the current language
