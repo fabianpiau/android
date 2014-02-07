@@ -6,20 +6,21 @@ import org.jsoup.nodes.Document;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.carmablog.R;
 import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.URLContent;
+import com.carmablog.url.history.UrlHtmlContent;
 
 /**
- * Retrieve the whole page from the Internet then display it in the WebView.
+ * Retrieve the whole HTML page from the Internet then display it in the WebView.
  * Display a progress bar.
  * @author fpiau
  *
  */
-public class RetrievePageRemoteTask extends AsyncTask<String, Void, URLContent> {
+public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlContent> {
 
 	// Parent main activity
     private MainActivity activity;
@@ -27,13 +28,16 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, URLContent> 
     // Progress dialog box
     private ProgressDialog progressDialog;
     
+    // Exception
+    private Exception exception;
+    
     /*
      * Constructor.
      */
     @SuppressLint("NewApi")
-	public RetrievePageRemoteTask(final MainActivity activity) {
+	public RetrieveHtmlRemoteTask(final MainActivity activity) {
 		this.activity = activity;
-		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= 11) {
+		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= Build.VERSION_CODES.HONEYCOMB) {
 			progressDialog = new ProgressDialog(activity, ProgressDialog.THEME_HOLO_DARK);
 		} else {
 			progressDialog = new ProgressDialog(activity);
@@ -50,7 +54,7 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, URLContent> 
 	}
 
 	@Override
-    public URLContent doInBackground(final String... urls) {
+    public UrlHtmlContent doInBackground(final String... urls) {
 		final String url = urls[0];
     	Document doc = null;
         try {
@@ -58,47 +62,38 @@ public class RetrievePageRemoteTask extends AsyncTask<String, Void, URLContent> 
         	doc = Jsoup.connect(url).get();
         } catch (Exception e) {
         	Log.e("Jsoup", "Cannot retrieve document. Check the URL: " + url + " is correct. Exception: " + e.getMessage());
+        	exception = e;
         }
 		if (doc != null) {
 			// Add CSS to remove useless things
 			doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "android_style.css");
 			// Get all info of the page
-			final URLContent urlContent = new URLContent();
+			final UrlHtmlContent urlContent = new UrlHtmlContent();
 			urlContent.setUrl(url);
 			urlContent.setHtmlContent(doc.outerHtml());
 			urlContent.setTitle(doc.body().select("h2").first().text());
-			// Add the URL and its content in the navigation history
-			activity.getUrlContentHistoryHelper().addUrlContentInHistory(urlContent);
-			// Update the WebView content on the UI thread
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					activity.getMyWebView().loadDataWithBaseURL("file:///android_asset/", urlContent.getHtmlContent(), "text/html", "UTF-8", null);
-				}
-			});
 			return urlContent;
-		} else {
-			// An error occurred with Jsoup
-			// Probably a connection error
-			activity.runOnUiThread(new Runnable() {
-				public void run() {
-					activity.getMyWebView().loadUrl("file:///android_asset/connection_timeout.html");
-					Toast.makeText(activity.getApplicationContext(), R.string.message_timeout, Toast.LENGTH_LONG).show();
-				}
-			});
-				
 		}
 		return null;
     }
 
 	@Override
-	protected void onPostExecute(final URLContent result) {
+	protected void onPostExecute(final UrlHtmlContent result) {
 		super.onPostExecute(result);
 		if (progressDialog.isShowing()) {
 			// Hide progress dialog
 			progressDialog.dismiss();
 	    }
-		// Set the result
-		activity.setCurrentUrlContent(result);
+		if (exception == null) {
+			activity.updateHistoryAndCurrentState(result);
+			// Update the WebView content
+			activity.getMyWebView().loadDataWithBaseURL("file:///android_asset/", result.getHtmlContent(), "text/html", "UTF-8", null);
+		} else {
+			// An error occurred with Jsoup
+			// Probably a connection error
+			activity.getMyWebView().loadUrl("file:///android_asset/connection_timeout.html");
+			Toast.makeText(activity.getApplicationContext(), R.string.message_timeout, Toast.LENGTH_LONG).show();
+		}
 	}
     
 }

@@ -1,27 +1,18 @@
 package com.carmablog.url.history;
 
 /**
- * Represent a URL with its content.
+ * Represent a URL content that is coming from a HTML page.
  * @author fpiau
  *
  */
-public class URLContent {
-	
-	// URL of the page
-	private String url;
-		
+public class UrlHtmlContent extends UrlContent {
+
 	// Title of the page
 	private String title;
 	
 	// Whole HTML code
 	private String htmlContent;
 
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(final String url) {
-		this.url = url;
-	}
 	
 	public String getTitle() {
 		return title;
@@ -38,5 +29,4 @@ public class URLContent {
 	public void setHtmlContent(final String htmlContent) {
 		this.htmlContent = htmlContent;
 	}
-
 }

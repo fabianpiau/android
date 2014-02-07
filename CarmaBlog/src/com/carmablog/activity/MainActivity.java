@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
@@ -19,17 +20,25 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.carmablog.R;
-import com.carmablog.retriever.RetrievePageLocalTask;
-import com.carmablog.retriever.RetrievePageRemoteTask;
-import com.carmablog.url.common.URLCallMethod;
-import com.carmablog.url.common.URLConstant;
-import com.carmablog.url.history.URLContent;
-import com.carmablog.url.history.URLContentHistoryHelper;
+import com.carmablog.retriever.RetrieveHtmlRemoteTask;
+import com.carmablog.retriever.RetrieveRssRemoteTask;
+import com.carmablog.url.common.UrlCallMethod;
+import com.carmablog.url.common.UrlConstant;
+import com.carmablog.url.history.UrlHtmlContent;
+import com.carmablog.url.history.UrlRssContent;
+import com.carmablog.url.history.UrlRssElement;
+import com.carmablog.url.history.UrlContent;
+import com.carmablog.url.history.UrlContentHistoryHelper;
 import com.carmablog.util.CarmaBlogUtils;
 
 /**
@@ -39,37 +48,55 @@ import com.carmablog.util.CarmaBlogUtils;
  */
 public class MainActivity extends Activity {
 
-	// WebView component
+	// WebView component - Normal Web page
 	private WebView myWebView;
 	private WebViewClient myWebViewClient;
+	// ListView component - RSS Posts page
+	private ListView myListView;
 	
 	// Menu
     private Menu menu;
 
     // Current state and preferences
 	private String currentLang;
-	private URLContent currentUrlContent;
+	private UrlContent currentUrlContent;
 	private SharedPreferences preferences;
 	private static final String KEY_CURRENT_LANG = "currentLang";
-	
+    
 	// URL history helper
-	private URLContentHistoryHelper urlContentHistoryHelper;
+	private UrlContentHistoryHelper urlContentHistoryHelper;
 	
-	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// Initialize display components
+		initializeMyWebView();
+		initializeMyListView();
+		
+		// Create the URL content history helper
+		urlContentHistoryHelper = new UrlContentHistoryHelper(this);
+		
+		// Restore language from preferences
+		preferences = getPreferences(MODE_PRIVATE);
+		currentLang = preferences.getString(KEY_CURRENT_LANG, null);
+	    if (currentLang == null) {
+	    	// Nothing found in preferences
+	    	// By default, use the language of the device
+	    	initializeLanguageFromDevice();
+	    }
+	    
+		// Load the homepage
+		loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
+	}
+
+	@SuppressLint("SetJavaScriptEnabled")
+	private void initializeMyWebView() {
 		myWebView = new WebView(this);
 		// Activate main useful features
 		myWebView.getSettings().setBuiltInZoomControls(true);
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setJavaScriptEnabled(true); // For syntax highlighting
-		// Take all the screen space
-		setContentView(myWebView);
-		
-		// Create the URL content history helper
-		urlContentHistoryHelper = new URLContentHistoryHelper(this);
 
 		// A client to handle links and navigation history
 		myWebViewClient = new WebViewClient() {
@@ -79,7 +106,7 @@ public class MainActivity extends Activity {
 				if (urlContentHistoryHelper.isUrlMatchingForApp(url)) {
 					// Still on CarmaBlog
 					// Load in the same WebView
-					loadCarmablogUrl(url);
+					loadCarmablogHtmlUrl(url);
 				} else {
 					// Not on CarmaBlog anymore or it is about sharing
 					// Load in an external browser
@@ -92,18 +119,33 @@ public class MainActivity extends Activity {
 
 		};
 		myWebView.setWebViewClient(myWebViewClient);
-		
-		// Restore language from preferences
-		preferences = getPreferences(MODE_PRIVATE);
-		currentLang = preferences.getString(KEY_CURRENT_LANG, null);
-	    if (currentLang == null) {
-	    	// Nothing found in preference
-	    	// By default use the language of the device
-	    	initializeLanguageFromDevice();
-	    }
-	    
-		// Load the homepage
-		loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
+	}
+
+	private void initializeMyListView() {
+		myListView = new ListView(this);
+		// Each item is a link to a post
+		myListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// Display the post
+				UrlRssElement urlRssElement = (UrlRssElement) myListView.getItemAtPosition(position);
+			    loadCarmablogHtmlUrl(urlRssElement.getLink());
+			}
+		});
+	}
+	
+	/*
+	 * Update the ListView with the list of RSS elements.
+	 */
+	public void updateListView(final List<UrlRssElement> urlRssElements) {
+		// TODO: Improve the design of the list
+		// Not a single text
+		// Show category with the icon instead of the text
+		// Show the title bigger
+		// Show the date smaller
+		// See to add description...
+		final ArrayAdapter<UrlRssElement> modeAdapter = new ArrayAdapter<UrlRssElement>(this, android.R.layout.simple_list_item_1, android.R.id.text1, urlRssElements);
+		myListView.setAdapter(modeAdapter);	
 	}
 	
     @Override
@@ -121,9 +163,9 @@ public class MainActivity extends Activity {
 	 */
 	private void initializeLanguageFromDevice() {
 		if (CarmaBlogUtils.isDeviceInFrench()) {
-			currentLang = URLConstant.LANG_FR;
+			currentLang = UrlConstant.LANG_FR;
 		} else {
-			currentLang = URLConstant.LANG_EN;
+			currentLang = UrlConstant.LANG_EN;
 		}
 	}
 
@@ -137,53 +179,125 @@ public class MainActivity extends Activity {
 		if (!(urlContentHistoryHelper.isUrlMatchingForApp(myWebView.getUrl()))
 				// And not the launch of the app
 				&& !(myWebView.getUrl().equals("about:blank"))) {
-			urlContentHistoryHelper.goBack(URLCallMethod.ON_RESUME);
+			urlContentHistoryHelper.goBack(UrlCallMethod.ON_RESUME);
 		}
 	}
 
 	/*
-	 * Load the URL (link in CarmaBlog).
-	 * The content has never been displayed yet.
+	 * Load the HTML URL.
 	 */
-	public void loadCarmablogUrl(final String url) {
+	public void loadCarmablogHtmlUrl(final String url) {
+		
+		// The WebView takes all the screen space
+		setContentView(myWebView);
+		
+		final String localizedUrl = transformCarmaBlogUrl(url);
+		if (localizedUrl != null) {
+			// Load the page
+			loadHtmlUrlInBackground(localizedUrl);
+		}
+	}
+	
+	/*
+	 * Load the RSS URL.
+	 */
+	public void loadCarmablogRssUrl(final String url) {
+		
+		// The ListView takes all the screen space
+		setContentView(myListView);
+		
+		final String localizedUrl = transformCarmaBlogUrl(url);
+		if (localizedUrl != null) {
+			// Load the RSS page
+			loadRssUrlInBackground(localizedUrl);
+		}
+	}
+	
+	/*
+	 * Load RSS URL with Jsoup.
+	 * The call is asynchronous.
+	 */
+	private void loadRssUrlInBackground(final String url) {
+		// Look in the history in case the page has been loaded before...
+		final UrlContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
+		if (urlContent != null) {
+			// Yeah, it will be faster
+			loadCarmablogRssUrl((UrlRssContent)urlContent);
+		} else {
+			// First time
+			// Do an async call
+			new RetrieveRssRemoteTask(this).execute(url);
+		}
+		if (menu != null) {
+			// Never show the share button on RSS feed
+			MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
+			shareMenuItem.setVisible(false);
+		}
+	}
+	
+	/*
+	 * Load the RSS URL.
+	 * The content is coming from the history.
+	 */
+	public void loadCarmablogRssUrl(final UrlRssContent urlContent) {
+		
+		// The ListView takes all the screen space
+		setContentView(myListView);
+		
+		updateHistoryAndCurrentState(urlContent);
+		// Reload list directly
+		updateListView(((UrlRssContent)urlContent).getUrlRssElements());
+	}
+
+	/*
+	 * Do some basic checks then set the language in the URL.
+	 */
+	private String transformCarmaBlogUrl(final String url) {
 		if (!urlContentHistoryHelper.isUrlMatchingForApp(url)) {
 			Log.e("MainActivity.loadCarmablogUrl", "Not a URL from CarmaBlog, you should open it in an external browser.");
-			return;
+			return null;
 		}
 		if (currentLang == null) {
 			initializeLanguageFromDevice();
 		}
-		final String localizedUrl = CarmaBlogUtils.localizeUrl(url, currentLang);
-		if (localizedUrl != null) {
-			// Load the page
-			loadUrlInBackground(localizedUrl);
-		}
+		return CarmaBlogUtils.localizeUrl(url, currentLang);
 	}
 
 	/*
-	 * Load the URL (link in CarmaBlog).
+	 * Load the URL.
 	 * The content is coming from the history.
 	 */
-	public void loadCarmablogUrl(final URLContent urlContent) {
+	public void loadCarmablogHtmlUrl(final UrlHtmlContent urlContent) {
+		
+		// The WebView takes all the screen space
+		setContentView(myWebView);
+		
+		updateHistoryAndCurrentState(urlContent);
 		// Simply display it in the WebView
-		// Async call
-		new RetrievePageLocalTask(this).execute(urlContent);
+		myWebView.loadDataWithBaseURL("file:///android_asset/", urlContent.getHtmlContent(), "text/html", "UTF-8", null);
+	}
+
+	public void updateHistoryAndCurrentState(final UrlContent urlContent) {
+		// Add the UrlContent in the navigation history
+		getUrlContentHistoryHelper().addUrlContentInHistory(urlContent);
+		// Set the result
+		setCurrentUrlContent(urlContent);
 	}
 
 	/*
 	 * Load URL with Jsoup.
 	 * The call is asynchronous.
 	 */
-	private void loadUrlInBackground(final String url) {
+	private void loadHtmlUrlInBackground(final String url) {
 		// Look in the history in case the page has been loaded before...
-		final URLContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
+		final UrlContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
 		if (urlContent != null) {
 			// Yeah, it will be faster
-			loadCarmablogUrl(urlContent);
+			loadCarmablogHtmlUrl((UrlHtmlContent)urlContent);
 		} else {
 			// First time
 			// Do an async call
-			new RetrievePageRemoteTask(this).execute(url);
+			new RetrieveHtmlRemoteTask(this).execute(url);
 		}
 		if (menu != null) {
 			// Show the share button only if we are displaying a single post
@@ -214,7 +328,7 @@ public class MainActivity extends Activity {
 
 		// Search menu (only if device is Honeycomb or newer)
 		MenuItem searchItem = menu.findItem(R.id.menu_search);
-		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= 11) {
+		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= Build.VERSION_CODES.HONEYCOMB) {
 		    
 		    SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 		    searchView.setSubmitButtonEnabled(true);
@@ -242,10 +356,10 @@ public class MainActivity extends Activity {
 	 * Launch query on the WordPress search feature.
 	 */
 	private void search(final String query) {
-		final String searchUrl = URLConstant.HOME_CARMABLOG_URL + 
-								   URLConstant.QUERY_SEARCH_TERM + query.replace(" ", "+") + 
-									 URLConstant.QUERY_SEARCH_ACTION;
-		loadCarmablogUrl(searchUrl);
+		final String searchUrl = UrlConstant.HOME_CARMABLOG_URL + 
+								   UrlConstant.QUERY_SEARCH_TERM + query.replace(" ", "+") + 
+									 UrlConstant.QUERY_SEARCH_ACTION;
+		loadCarmablogHtmlUrl(searchUrl);
 	}
 
 	@Override
@@ -253,7 +367,7 @@ public class MainActivity extends Activity {
 		switch (keyCode) {
 			// Check if the key event was the Back button
 			case KeyEvent.KEYCODE_BACK:
-				return urlContentHistoryHelper.goBack(URLCallMethod.ON_KEY_DOWN);
+				return urlContentHistoryHelper.goBack(UrlCallMethod.ON_KEY_DOWN);
 			default:
 				return super.onKeyDown(keyCode, event);
 		}
@@ -265,41 +379,55 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 			case R.id.menu_search:
 				return true;
+			case R.id.menu_home:
+				loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
+				return true;
+			case R.id.menu_en:
+				currentLang = UrlConstant.LANG_EN;
+				changeMenuItemLang(UrlConstant.LANG_EN);
+				if (CarmaBlogUtils.isUrlRssContent(currentUrlContent)) {
+					loadCarmablogRssUrl(currentUrlContent.getUrl());
+				} else {
+					loadCarmablogHtmlUrl(currentUrlContent.getUrl());
+				}
+				return true;
+			case R.id.menu_fr:
+				currentLang = UrlConstant.LANG_FR;
+				changeMenuItemLang(UrlConstant.LANG_FR);
+				if (CarmaBlogUtils.isUrlRssContent(currentUrlContent)) {
+					loadCarmablogRssUrl(currentUrlContent.getUrl());
+				} else {
+					loadCarmablogHtmlUrl(currentUrlContent.getUrl());
+				}
+				return true;
+			case R.id.menu_rss:
+				loadCarmablogRssUrl(UrlConstant.RSS_CARMABLOG_URL);
+				return true;
 			case R.id.menu_share:
-			    startActivity(defineSharingIntent());
+				final Intent sharingIntent = defineSharingIntent();
+				if (sharingIntent != null) {
+					startActivity(sharingIntent);
+			    }
 				return true;
 			case R.id.menu_categories:
 				return true;
-			case R.id.menu_home:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
-				return true;
-			case R.id.menu_en:
-				currentLang = URLConstant.LANG_EN;
-				changeMenuItemLang(URLConstant.LANG_EN);
-				loadCarmablogUrl(currentUrlContent.getUrl());
-				return true;
-			case R.id.menu_fr:
-				currentLang = URLConstant.LANG_FR;
-				changeMenuItemLang(URLConstant.LANG_FR);
-				loadCarmablogUrl(currentUrlContent.getUrl());
-				return true;
 			case R.id.menu_management:
-				loadCarmablogUrl(URLConstant.CATEGORY_MANAGEMENT_URL);
+				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_MANAGEMENT_URL);
 				return true;
 			case R.id.menu_agile_programming:
-				loadCarmablogUrl(URLConstant.CATEGORY_AGILE_PROGRAMMING_URL);
+				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_AGILE_PROGRAMMING_URL);
 				return true;
 			case R.id.menu_technology:
-				loadCarmablogUrl(URLConstant.CATEGORY_TECHNOLOGY_URL);
+				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_TECHNOLOGY_URL);
 				return true;
 			case R.id.menu_linux:
-				loadCarmablogUrl(URLConstant.CATEGORY_LINUX_URL);
+				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_LINUX_URL);
 				return true;
 			case R.id.menu_event:
-				loadCarmablogUrl(URLConstant.CATEGORY_EVENT_URL);
+				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_EVENT_URL);
 				return true;
 			default:
-				loadCarmablogUrl(URLConstant.HOME_CARMABLOG_URL);
+				loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
 				return true;
 		}
 	}
@@ -310,7 +438,7 @@ public class MainActivity extends Activity {
 	private void changeMenuItemLang(CharSequence lang) {
 		final MenuItem langEnMenuItem = menu.findItem(R.id.menu_en);
 		final MenuItem langFrMenuItem = menu.findItem(R.id.menu_fr);
-		if (currentLang.equals(URLConstant.LANG_FR)) {
+		if (currentLang.equals(UrlConstant.LANG_FR)) {
 			// English switcher
 			langEnMenuItem.setVisible(true);
 			langFrMenuItem.setVisible(false);
@@ -325,6 +453,7 @@ public class MainActivity extends Activity {
 	 * Define sharing intent for the current post.
 	 */
 	private Intent defineSharingIntent() {
+		
 		final Intent globalSharingIntent = new Intent();
 		globalSharingIntent.setType(HTTP.PLAIN_TEXT_TYPE);
 		globalSharingIntent.setAction(Intent.ACTION_SEND);
@@ -333,7 +462,8 @@ public class MainActivity extends Activity {
 	    final List<ResolveInfo> activities = packageManager.queryIntentActivities(globalSharingIntent, 0);
 	    
 		final List<Intent> sharingIntents = new ArrayList<Intent>();
-		final String shareBody = currentUrlContent.getTitle() + " - " + currentUrlContent.getUrl();
+		// Cast is possible because we share only on HTML pages
+		final String shareBody = ((UrlHtmlContent)currentUrlContent).getTitle() + " - " + currentUrlContent.getUrl();
 		
 	    for (final ResolveInfo app : activities) {
 			final Intent sharingIntent = new Intent();
@@ -347,7 +477,9 @@ public class MainActivity extends Activity {
 		        sharingIntents.add(sharingIntent);
 	    	}
 	    }
-
+	    if (sharingIntents.isEmpty()) {
+	    	return null;
+	    }
 		final Intent chooserIntent = Intent.createChooser(sharingIntents.remove(0), getString(R.string.share_title));
 		chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, sharingIntents.toArray(new Parcelable[]{}));
 		return chooserIntent;
@@ -357,11 +489,15 @@ public class MainActivity extends Activity {
 		return myWebView;
 	}
 
-	public URLContentHistoryHelper getUrlContentHistoryHelper() {
+	public ListView getMyListView() {
+		return myListView;
+	}
+
+	public UrlContentHistoryHelper getUrlContentHistoryHelper() {
 		return urlContentHistoryHelper;
 	}
 
-	public void setCurrentUrlContent(final URLContent currentUrlContent) {
+	public void setCurrentUrlContent(final UrlContent currentUrlContent) {
 		this.currentUrlContent = currentUrlContent;
 	}
 	

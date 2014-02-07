@@ -5,6 +5,6 @@ package com.carmablog.url.common;
  * @author fpiau
  *
  */
-public enum URLCallMethod {
+public enum UrlCallMethod {
 	ON_RESUME, ON_KEY_DOWN;
 }

@@ -8,6 +8,8 @@
     <string name="menu_fr">En fran&#231;ais</string>
     <string name="menu_en">En anglais</string>
     
+    <string name="menu_rss">Derniers articles</string>
+    
     <string name="menu_categories">Cat&#233;gories</string>
     <string name="menu_management">Management</string>
     <string name="menu_agile_programming">Programmation Agile</string>

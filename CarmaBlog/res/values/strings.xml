@@ -10,6 +10,8 @@
     <string name="menu_fr">In french</string>
     <string name="menu_en">In english</string>
     
+    <string name="menu_rss">Recent Posts</string>
+    
     <string name="menu_categories">Categories</string>
     <string name="menu_management">Management</string>
     <string name="menu_agile_programming">Agile Programming</string>

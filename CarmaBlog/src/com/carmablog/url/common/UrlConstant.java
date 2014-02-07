@@ -5,7 +5,7 @@ package com.carmablog.url.common;
  * @author fpiau
  *
  */
-public class URLConstant {
+public class UrlConstant {
 	
 	// Patterns to recognize URLs from CarmaBlog
 	// Match
@@ -35,5 +35,9 @@ public class URLConstant {
 	// Search URLs
 	public static final CharSequence QUERY_SEARCH_TERM = "?s=";
 	public static final CharSequence QUERY_SEARCH_ACTION = "&submit=Rechercher";
+	
+	// RSS URL
+	private static final CharSequence RSS_PATTERN = "feed";
+	public static final String RSS_CARMABLOG_URL = BASE_CARMABLOG_URL + SEPARATOR_URL + LANG_PATTERN + SEPARATOR_URL + RSS_PATTERN + SEPARATOR_URL;
 
 }

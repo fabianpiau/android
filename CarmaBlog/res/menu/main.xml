@@ -27,12 +27,19 @@
         android:title="@string/menu_fr"
         android:icon="@drawable/lang"/>
     
+    <item
+        android:id="@+id/menu_rss"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_rss"
+        android:icon="@drawable/rss"/>
+    
     <!-- Sharing -->
     <item
         android:id="@+id/menu_share"
         android:showAsAction="never"
         android:title="@string/menu_share"
-        android:actionProviderClass="android.widget.ShareActionProvider"/>
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        android:icon="@android:drawable/ic_menu_share"/>
     
     <!--  Post categories -->
     <item
