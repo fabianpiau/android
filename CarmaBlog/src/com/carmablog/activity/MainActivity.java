@@ -25,11 +25,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.carmablog.R;
+import com.carmablog.list.PostArrayAdapter;
 import com.carmablog.retriever.RetrieveHtmlRemoteTask;
 import com.carmablog.retriever.RetrieveRssRemoteTask;
 import com.carmablog.url.common.UrlCallMethod;
@@ -139,14 +139,7 @@ public class MainActivity extends Activity {
 	 * Update the ListView with the list of RSS elements.
 	 */
 	public void updateListView(final List<UrlRssElement> urlRssElements) {
-		// TODO: Improve the design of the list
-		// Not a single text
-		// Show category with the icon instead of the text
-		// Show the title bigger
-		// Show the date smaller
-		// See to add description...
-		final ArrayAdapter<UrlRssElement> modeAdapter = new ArrayAdapter<UrlRssElement>(this, android.R.layout.simple_list_item_1, android.R.id.text1, urlRssElements);
-		myListView.setAdapter(modeAdapter);	
+		myListView.setAdapter(new PostArrayAdapter(this, urlRssElements));	
 	}
 	
     @Override
@@ -494,6 +487,10 @@ public class MainActivity extends Activity {
 		return myListView;
 	}
 
+	public String getCurrentLang() {
+		return currentLang;
+	}
+	
 	public UrlContentHistoryHelper getUrlContentHistoryHelper() {
 		return urlContentHistoryHelper;
 	}

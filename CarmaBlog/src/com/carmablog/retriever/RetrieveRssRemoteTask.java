@@ -11,10 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -43,15 +41,9 @@ public class RetrieveRssRemoteTask extends AsyncTask<String, Void, UrlRssContent
     /*
      * Constructor.
      */
-    @SuppressLint("NewApi")
 	public RetrieveRssRemoteTask(final MainActivity activity) {
 		this.activity = activity;
-		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= Build.VERSION_CODES.HONEYCOMB) {
-			progressDialog = new ProgressDialog(activity, ProgressDialog.THEME_HOLO_DARK);
-		} else {
-			progressDialog = new ProgressDialog(activity);
-		}
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog = new ProgressDialog(activity);
 	}
 
 	@Override

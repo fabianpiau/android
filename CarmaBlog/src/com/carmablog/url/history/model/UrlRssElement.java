@@ -49,9 +49,4 @@ public class UrlRssElement {
 		this.category = category;
 	}
 
-	@Override
-    public String toString() {
-        return this.title + "\n" + this.date + "\n" + this.category;
-    }
-	
 }

@@ -3,10 +3,8 @@ package com.carmablog.retriever;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -34,15 +32,9 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
     /*
      * Constructor.
      */
-    @SuppressLint("NewApi")
 	public RetrieveHtmlRemoteTask(final MainActivity activity) {
 		this.activity = activity;
-		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= Build.VERSION_CODES.HONEYCOMB) {
-			progressDialog = new ProgressDialog(activity, ProgressDialog.THEME_HOLO_DARK);
-		} else {
-			progressDialog = new ProgressDialog(activity);
-		}
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog = new ProgressDialog(activity);
 	}
 
 	@Override

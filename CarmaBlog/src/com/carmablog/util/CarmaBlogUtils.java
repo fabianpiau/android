@@ -1,5 +1,7 @@
 package com.carmablog.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import com.carmablog.url.common.UrlConstant;
@@ -120,6 +122,19 @@ public final class CarmaBlogUtils {
 	 */
 	public static boolean isUrlRssContent(final UrlContent urlContent) {
 		return urlContent instanceof UrlRssContent;
+	}
+	
+	/*
+	 * Format a date depending on the language.
+	 */
+	public static CharSequence formatDate(final Date date, final String currentLang) {
+		SimpleDateFormat simpleDateFormat;
+		if (currentLang.equals(UrlConstant.LANG_FR)) {
+			 simpleDateFormat = new SimpleDateFormat("EEEE d MMMM yyyy - HH:mm", Locale.FRANCE);
+		} else {
+			 simpleDateFormat = new SimpleDateFormat("EEEE MMMM d, yyyy - K:mm a", Locale.ENGLISH);
+		}
+		return simpleDateFormat.format(date);
 	}
 
 }
