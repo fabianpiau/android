@@ -1,4 +1,4 @@
-package com.carmablog.url.history;
+package com.carmablog.url.history.model;
 
 /**
  * Represent a URL content that is coming from a HTML page.

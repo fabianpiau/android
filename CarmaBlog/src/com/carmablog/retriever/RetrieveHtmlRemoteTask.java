@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.carmablog.R;
 import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.UrlHtmlContent;
+import com.carmablog.url.history.model.UrlHtmlContent;
 
 /**
  * Retrieve the whole HTML page from the Internet then display it in the WebView.

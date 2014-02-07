@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.carmablog.R;
 import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.UrlRssContent;
-import com.carmablog.url.history.UrlRssElement;
+import com.carmablog.url.history.model.UrlRssContent;
+import com.carmablog.url.history.model.UrlRssElement;
 
 /**
  * Retrieve the RSS feed from the Internet then display it in the ListView.

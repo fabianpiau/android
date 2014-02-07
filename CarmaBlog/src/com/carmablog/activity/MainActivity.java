@@ -34,11 +34,12 @@ import com.carmablog.retriever.RetrieveHtmlRemoteTask;
 import com.carmablog.retriever.RetrieveRssRemoteTask;
 import com.carmablog.url.common.UrlCallMethod;
 import com.carmablog.url.common.UrlConstant;
-import com.carmablog.url.history.UrlHtmlContent;
-import com.carmablog.url.history.UrlRssContent;
-import com.carmablog.url.history.UrlRssElement;
-import com.carmablog.url.history.UrlContent;
+import com.carmablog.url.history.UrlContentCacheManager;
 import com.carmablog.url.history.UrlContentHistoryHelper;
+import com.carmablog.url.history.model.UrlContent;
+import com.carmablog.url.history.model.UrlHtmlContent;
+import com.carmablog.url.history.model.UrlRssContent;
+import com.carmablog.url.history.model.UrlRssElement;
 import com.carmablog.util.CarmaBlogUtils;
 
 /**
@@ -75,7 +76,7 @@ public class MainActivity extends Activity {
 		initializeMyListView();
 		
 		// Create the URL content history helper
-		urlContentHistoryHelper = new UrlContentHistoryHelper(this);
+		urlContentHistoryHelper = new UrlContentHistoryHelper(this, new UrlContentCacheManager());
 		
 		// Restore language from preferences
 		preferences = getPreferences(MODE_PRIVATE);
@@ -103,7 +104,7 @@ public class MainActivity extends Activity {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				super.shouldOverrideUrlLoading(view, url);
-				if (urlContentHistoryHelper.isUrlMatchingForApp(url)) {
+				if (CarmaBlogUtils.isUrlMatchingForApp(url)) {
 					// Still on CarmaBlog
 					// Load in the same WebView
 					loadCarmablogHtmlUrl(url);
@@ -176,7 +177,7 @@ public class MainActivity extends Activity {
 			return;
 		}
 		// Not a resume from an external page
-		if (!(urlContentHistoryHelper.isUrlMatchingForApp(myWebView.getUrl()))
+		if (!(CarmaBlogUtils.isUrlMatchingForApp(myWebView.getUrl()))
 				// And not the launch of the app
 				&& !(myWebView.getUrl().equals("about:blank"))) {
 			urlContentHistoryHelper.goBack(UrlCallMethod.ON_RESUME);
@@ -253,7 +254,7 @@ public class MainActivity extends Activity {
 	 * Do some basic checks then set the language in the URL.
 	 */
 	private String transformCarmaBlogUrl(final String url) {
-		if (!urlContentHistoryHelper.isUrlMatchingForApp(url)) {
+		if (!CarmaBlogUtils.isUrlMatchingForApp(url)) {
 			Log.e("MainActivity.loadCarmablogUrl", "Not a URL from CarmaBlog, you should open it in an external browser.");
 			return null;
 		}
@@ -278,8 +279,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void updateHistoryAndCurrentState(final UrlContent urlContent) {
-		// Add the UrlContent in the navigation history
-		getUrlContentHistoryHelper().addUrlContentInHistory(urlContent);
+		// Add the URL in the history and its content in cache
+		getUrlContentHistoryHelper().addUrlInHistory(urlContent);
 		// Set the result
 		setCurrentUrlContent(urlContent);
 	}

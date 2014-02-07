@@ -3,8 +3,8 @@ package com.carmablog.util;
 import java.util.Locale;
 
 import com.carmablog.url.common.UrlConstant;
-import com.carmablog.url.history.UrlContent;
-import com.carmablog.url.history.UrlRssContent;
+import com.carmablog.url.history.model.UrlContent;
+import com.carmablog.url.history.model.UrlRssContent;
 
 /**
  * Utilities class.
@@ -101,6 +101,18 @@ public final class CarmaBlogUtils {
 					 || packageNameApp.contains("thedeck")
 					  || packageNameApp.contains("email")
 					   || packageNameApp.contains("viadeo"));
+	}
+	
+	/*
+	 * Check if the URL is 100% from CarmaBlog.
+	 */
+	public static boolean isUrlMatchingForApp(final String url) {
+		return url.contains(UrlConstant.CARMABLOG_PATTERN) 
+				&& !(url.contains(UrlConstant.COMMON_SHARING_PATTERN))
+				  && !(url.contains(UrlConstant.FACEBOOK_SHARING_PATTERN))
+				    && !(url.contains(UrlConstant.TWITTER_SHARING_PATTERN))
+				      && !(url.contains(UrlConstant.GOOGLE_SHARING_PATTERN))
+				        && !(url.contains(UrlConstant.LINKEDIN_SHARING_PATTERN));
 	}
 	
 	/*
