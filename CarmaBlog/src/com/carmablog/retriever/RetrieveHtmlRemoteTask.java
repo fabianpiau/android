@@ -64,6 +64,8 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
 			urlContent.setUrl(url);
 			urlContent.setHtmlContent(doc.outerHtml());
 			urlContent.setTitle(doc.body().select("h2").first().text());
+			urlContent.setNextPostUrl(doc.body().select("[rel=next]").attr("href"));
+			urlContent.setPreviousPostUrl(doc.body().select("[rel=prev]").attr("href"));
 			return urlContent;
 		}
 		return null;

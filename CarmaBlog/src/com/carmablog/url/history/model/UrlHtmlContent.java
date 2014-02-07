@@ -7,12 +7,15 @@ package com.carmablog.url.history.model;
  */
 public class UrlHtmlContent extends UrlContent {
 
-	// Title of the page
+	// Title of the post
 	private String title;
 	
 	// Whole HTML code
 	private String htmlContent;
 
+	// Post navigation
+	private String previousPostUrl;
+	private String nextPostUrl;
 	
 	public String getTitle() {
 		return title;
@@ -29,4 +32,21 @@ public class UrlHtmlContent extends UrlContent {
 	public void setHtmlContent(final String htmlContent) {
 		this.htmlContent = htmlContent;
 	}
+
+	public String getPreviousPostUrl() {
+		return previousPostUrl;
+	}
+
+	public void setPreviousPostUrl(String previousPostUrl) {
+		this.previousPostUrl = previousPostUrl;
+	}
+
+	public String getNextPostUrl() {
+		return nextPostUrl;
+	}
+
+	public void setNextPostUrl(String nextPostUrl) {
+		this.nextPostUrl = nextPostUrl;
+	}
+	
 }

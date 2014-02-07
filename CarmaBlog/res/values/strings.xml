@@ -22,6 +22,10 @@
     <string name="share_title">Share this post with&#8230;</string>
     <string name="message_loading">Loading&#8230;</string>
     <string name="message_timeout">Unable to connect to this page.\nConnection timeout&#8230;</string>
+    <string name="message_next_post">Next post</string>
+    <string name="message_previous_post">Previous post</string>
+    <string name="message_first_post">First post reached&#8230;</string>
+    <string name="message_last_post">Last post reached&#8230;</string>
     
     <string name="row_post_category">Category</string>
     <string name="row_post_title">Post title</string>

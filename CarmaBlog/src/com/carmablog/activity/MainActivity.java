@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -22,14 +21,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.carmablog.R;
-import com.carmablog.list.PostArrayAdapter;
 import com.carmablog.retriever.RetrieveHtmlRemoteTask;
 import com.carmablog.retriever.RetrieveRssRemoteTask;
 import com.carmablog.url.common.UrlCallMethod;
@@ -41,6 +38,8 @@ import com.carmablog.url.history.model.UrlHtmlContent;
 import com.carmablog.url.history.model.UrlRssContent;
 import com.carmablog.url.history.model.UrlRssElement;
 import com.carmablog.util.CarmaBlogUtils;
+import com.carmablog.view.CustomWebView;
+import com.carmablog.view.PostArrayAdapter;
 
 /**
  * CarmaBlog Main Activity.
@@ -51,7 +50,6 @@ public class MainActivity extends Activity {
 
 	// WebView component - Normal Web page
 	private WebView myWebView;
-	private WebViewClient myWebViewClient;
 	// ListView component - RSS Posts page
 	private ListView myListView;
 	
@@ -91,35 +89,8 @@ public class MainActivity extends Activity {
 		loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
 	private void initializeMyWebView() {
-		myWebView = new WebView(this);
-		// Activate main useful features
-		myWebView.getSettings().setBuiltInZoomControls(true);
-		myWebView.getSettings().setSupportZoom(true);
-		myWebView.getSettings().setJavaScriptEnabled(true); // For syntax highlighting
-
-		// A client to handle links and navigation history
-		myWebViewClient = new WebViewClient() {
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				super.shouldOverrideUrlLoading(view, url);
-				if (CarmaBlogUtils.isUrlMatchingForApp(url)) {
-					// Still on CarmaBlog
-					// Load in the same WebView
-					loadCarmablogHtmlUrl(url);
-				} else {
-					// Not on CarmaBlog anymore or it is about sharing
-					// Load in an external browser
-					Intent i = new Intent(Intent.ACTION_VIEW);
-					i.setData(Uri.parse(url));
-					startActivity(i);
-				}
-				return true;
-			}
-
-		};
-		myWebView.setWebViewClient(myWebViewClient);
+		myWebView = new CustomWebView(this);
 	}
 
 	private void initializeMyListView() {
@@ -490,9 +461,13 @@ public class MainActivity extends Activity {
 	public String getCurrentLang() {
 		return currentLang;
 	}
-	
+
 	public UrlContentHistoryHelper getUrlContentHistoryHelper() {
 		return urlContentHistoryHelper;
+	}
+	
+	public UrlContent getCurrentUrlContent() {
+		return currentUrlContent;
 	}
 
 	public void setCurrentUrlContent(final UrlContent currentUrlContent) {

@@ -1,4 +1,4 @@
-package com.carmablog.list;
+package com.carmablog.view;
 
 import java.util.List;
 
@@ -15,6 +15,11 @@ import com.carmablog.activity.MainActivity;
 import com.carmablog.url.history.model.UrlRssElement;
 import com.carmablog.util.CarmaBlogUtils;
 
+/**
+ * List of posts (RSS part).
+ * @author fpiau
+ *
+ */
 public class PostArrayAdapter extends ArrayAdapter<UrlRssElement> {
 	
 	private final MainActivity activity;
