@@ -115,7 +115,9 @@ public class MainActivity extends Activity {
 	public void updateListView(final List<UrlRssElement> urlRssElements) {
 		final PostArrayAdapter postArrayAdapter = ((PostArrayAdapter)myListView.getAdapter());
 		postArrayAdapter.clear();	
-		postArrayAdapter.addAll(urlRssElements);
+		for (UrlRssElement urlRssElement : urlRssElements) {
+			postArrayAdapter.add(urlRssElement);
+		}
 	}
 	
     @Override
@@ -191,14 +193,14 @@ public class MainActivity extends Activity {
 			// Do an async call
 			new RetrieveRssRemoteTask(this).execute(url);
 		}
+	}
+
+	public void setFocusOnListView() {
 		if (menu != null) {
 			// Never show the share button on RSS feed
 			MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
 			shareMenuItem.setVisible(false);
 		}
-	}
-
-	public void setFocusOnListView() {
 		// The ListView takes all the screen space
 		if (!(getCurrentFocus() instanceof ListView)) {
 			setContentView(myListView);
