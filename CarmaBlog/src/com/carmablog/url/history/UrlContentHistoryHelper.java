@@ -106,7 +106,7 @@ public class UrlContentHistoryHelper {
 	
 			} else {
 				// This is a single post HTML content
-				activity.setFocusOnWebView();
+				activity.setFocusOnWebView(url);
 				activity.loadCarmablogHtmlUrl((UrlHtmlContent)urlContent);
 			}
 		}

@@ -197,11 +197,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void setFocusOnListView() {
-		if (menu != null) {
-			// Never show the share button on RSS feed
-			MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
-			shareMenuItem.setVisible(false);
-		}
+		// Never show the share button on RSS feed
+		defineShareButtonVisibility(null, false);
 		// The ListView takes all the screen space
 		if (!(getCurrentFocus() instanceof ListView)) {
 			setContentView(myListView);
@@ -254,7 +251,7 @@ public class MainActivity extends Activity {
 	 * The call is asynchronous.
 	 */
 	private void loadHtmlUrlInBackground(final String url) {
-		setFocusOnWebView();
+		setFocusOnWebView(url);
 		// Look in the history in case the page has been loaded before...
 		final UrlContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
 		if (urlContent != null) {
@@ -265,21 +262,46 @@ public class MainActivity extends Activity {
 			// Do an async call
 			new RetrieveHtmlRemoteTask(this).execute(url);
 		}
+	}
+	
+	/*
+	 * The additional URL parameter is only to know if we need to display the share button or not.
+	 */
+	public void setFocusOnWebView(final String url) {
+		defineShareButtonVisibility(url);
+		// The WebView takes all the screen space
+		if (!(getCurrentFocus() instanceof CustomWebView)) {
+			setContentView(myWebView);
+		}
+	}
+	
+	/*
+	 * Define the visibility of the share button depending on the URL.
+	 * @param url The URL to check. If null, try to get the URL from the current state.
+	 * @param visibility Force the visibility (no calculation done). Put false to hide the button.
+	 */
+	private void defineShareButtonVisibility(final String url, final boolean... visibility) {
 		if (menu != null) {
+			final MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
+			if (visibility.length == 1) {
+				shareMenuItem.setVisible(visibility[0]);
+				return;
+			}
+			String urlToCheck = null;
+			if (url != null) {
+				urlToCheck = url;
+			} else if (currentUrlContent != null) {
+				urlToCheck = currentUrlContent.getUrl();
+			} else {
+				// Don't know what to do so leave the button in its current state
+				return;
+			}
 			// Show the share button only if we are displaying a single post
-			MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
-			if (CarmaBlogUtils.isUrlMatchingSinglePost(url)) {
+			if (CarmaBlogUtils.isUrlMatchingSinglePost(urlToCheck)) {
 				shareMenuItem.setVisible(true);
 			} else {
 				shareMenuItem.setVisible(false);
 			}
-		}
-	}
-
-	public void setFocusOnWebView() {
-		// The WebView takes all the screen space
-		if (!(getCurrentFocus() instanceof CustomWebView)) {
-			setContentView(myWebView);
 		}
 	}
 
@@ -295,9 +317,8 @@ public class MainActivity extends Activity {
 		// This adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		
-		// Make the share button invisible
-		final MenuItem shareMenuItem = menu.findItem(R.id.menu_share);
-		shareMenuItem.setVisible(false);
+		// This is the homepage so make the share button invisible
+		defineShareButtonVisibility(null, false);
 
 		// Search menu (only if device is Honeycomb or newer)
 		MenuItem searchItem = menu.findItem(R.id.menu_search);
