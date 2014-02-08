@@ -101,10 +101,12 @@ public class UrlContentHistoryHelper {
 			// Load from the cache
 			if (CarmaBlogUtils.isUrlRssContent(urlContent)) {
 				// This is about RSS
+				activity.setFocusOnListView();
 				activity.loadCarmablogRssUrl((UrlRssContent)urlContent);
 	
 			} else {
 				// This is a single post HTML content
+				activity.setFocusOnWebView();
 				activity.loadCarmablogHtmlUrl((UrlHtmlContent)urlContent);
 			}
 		}

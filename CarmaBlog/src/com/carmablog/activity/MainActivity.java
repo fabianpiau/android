@@ -95,6 +95,9 @@ public class MainActivity extends Activity {
 
 	private void initializeMyListView() {
 		myListView = new ListView(this);
+		// Prepare list of posts
+		final PostArrayAdapter postArrayAdapter = new PostArrayAdapter(this, new ArrayList<UrlRssElement>());
+		myListView.setAdapter(postArrayAdapter);
 		// Each item is a link to a post
 		myListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -110,7 +113,9 @@ public class MainActivity extends Activity {
 	 * Update the ListView with the list of RSS elements.
 	 */
 	public void updateListView(final List<UrlRssElement> urlRssElements) {
-		myListView.setAdapter(new PostArrayAdapter(this, urlRssElements));	
+		final PostArrayAdapter postArrayAdapter = ((PostArrayAdapter)myListView.getAdapter());
+		postArrayAdapter.clear();	
+		postArrayAdapter.addAll(urlRssElements);
 	}
 	
     @Override
@@ -152,10 +157,6 @@ public class MainActivity extends Activity {
 	 * Load the HTML URL.
 	 */
 	public void loadCarmablogHtmlUrl(final String url) {
-		
-		// The WebView takes all the screen space
-		setContentView(myWebView);
-		
 		final String localizedUrl = transformCarmaBlogUrl(url);
 		if (localizedUrl != null) {
 			// Load the page
@@ -167,10 +168,6 @@ public class MainActivity extends Activity {
 	 * Load the RSS URL.
 	 */
 	public void loadCarmablogRssUrl(final String url) {
-		
-		// The ListView takes all the screen space
-		setContentView(myListView);
-		
 		final String localizedUrl = transformCarmaBlogUrl(url);
 		if (localizedUrl != null) {
 			// Load the RSS page
@@ -183,6 +180,7 @@ public class MainActivity extends Activity {
 	 * The call is asynchronous.
 	 */
 	private void loadRssUrlInBackground(final String url) {
+		setFocusOnListView();
 		// Look in the history in case the page has been loaded before...
 		final UrlContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
 		if (urlContent != null) {
@@ -199,16 +197,19 @@ public class MainActivity extends Activity {
 			shareMenuItem.setVisible(false);
 		}
 	}
+
+	public void setFocusOnListView() {
+		// The ListView takes all the screen space
+		if (!(getCurrentFocus() instanceof ListView)) {
+			setContentView(myListView);
+		}
+	}
 	
 	/*
 	 * Load the RSS URL.
 	 * The content is coming from the history.
 	 */
 	public void loadCarmablogRssUrl(final UrlRssContent urlContent) {
-		
-		// The ListView takes all the screen space
-		setContentView(myListView);
-		
 		updateHistoryAndCurrentState(urlContent);
 		// Reload list directly
 		updateListView(((UrlRssContent)urlContent).getUrlRssElements());
@@ -233,10 +234,6 @@ public class MainActivity extends Activity {
 	 * The content is coming from the history.
 	 */
 	public void loadCarmablogHtmlUrl(final UrlHtmlContent urlContent) {
-		
-		// The WebView takes all the screen space
-		setContentView(myWebView);
-		
 		updateHistoryAndCurrentState(urlContent);
 		// Simply display it in the WebView
 		myWebView.loadDataWithBaseURL("file:///android_asset/", urlContent.getHtmlContent(), "text/html", "UTF-8", null);
@@ -254,6 +251,7 @@ public class MainActivity extends Activity {
 	 * The call is asynchronous.
 	 */
 	private void loadHtmlUrlInBackground(final String url) {
+		setFocusOnWebView();
 		// Look in the history in case the page has been loaded before...
 		final UrlContent urlContent = urlContentHistoryHelper.getURLContentFromURL(url); 
 		if (urlContent != null) {
@@ -272,6 +270,13 @@ public class MainActivity extends Activity {
 			} else {
 				shareMenuItem.setVisible(false);
 			}
+		}
+	}
+
+	public void setFocusOnWebView() {
+		// The WebView takes all the screen space
+		if (!(getCurrentFocus() instanceof CustomWebView)) {
+			setContentView(myWebView);
 		}
 	}
 

@@ -3,9 +3,11 @@ package com.carmablog.view;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -27,7 +29,7 @@ public class CustomWebView extends WebView {
 	private MainActivity activity;
 	private GestureDetector gestureDetector;
 
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	public CustomWebView(final MainActivity activity) {
 		super(activity);
 		this.activity = activity;
@@ -37,6 +39,11 @@ public class CustomWebView extends WebView {
 		getSettings().setSupportZoom(true);
 		getSettings().setJavaScriptEnabled(true); // For syntax highlighting
 
+		// To avoid flickering
+		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= Build.VERSION_CODES.HONEYCOMB) {
+			setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		}
+		
 		// A client to handle links and navigation history
 		final WebViewClient webViewClient = new WebViewClient() {
 			@Override
@@ -57,16 +64,6 @@ public class CustomWebView extends WebView {
 			}
 		};
 		setWebViewClient(webViewClient);
-		
-		
-		//setOnTouchListener(
-		//        new View.OnTouchListener() {
-		//            public boolean onTouch(View wv, MotionEvent event) {
-		//                gestureDetector.onTouchEvent(event);
-		//                return false;
-		//            }
-		//        }
-		//);
 		gestureDetector = new GestureDetector(activity, sogl);
 	}
 
@@ -74,7 +71,6 @@ public class CustomWebView extends WebView {
 	public boolean onTouchEvent(MotionEvent event) {
 		return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
 	}
-
 
 	final GestureDetector.SimpleOnGestureListener sogl = new GestureDetector.SimpleOnGestureListener() {
 		
