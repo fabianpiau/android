@@ -1,5 +1,7 @@
 package com.carmablog.url.history.model;
 
+import com.carmablog.util.CarmaBlogUtils;
+
 /**
  * Represent a URL content that is coming from a HTML page.
  * @author fpiau
@@ -16,6 +18,9 @@ public class UrlHtmlContent extends UrlContent {
 	// Post navigation
 	private String previousPostUrl;
 	private String nextPostUrl;
+	
+	// Page navigation
+	private String pageNumber;
 	
 	public String getTitle() {
 		return title;
@@ -37,7 +42,7 @@ public class UrlHtmlContent extends UrlContent {
 		return previousPostUrl;
 	}
 
-	public void setPreviousPostUrl(String previousPostUrl) {
+	public void setPreviousPostUrl(final String previousPostUrl) {
 		this.previousPostUrl = previousPostUrl;
 	}
 
@@ -45,8 +50,16 @@ public class UrlHtmlContent extends UrlContent {
 		return nextPostUrl;
 	}
 
-	public void setNextPostUrl(String nextPostUrl) {
+	public void setNextPostUrl(final String nextPostUrl) {
 		this.nextPostUrl = nextPostUrl;
+	}
+
+	public Integer getPageNumberAsInteger() {
+		return CarmaBlogUtils.convertStringToInteger(pageNumber);
+	}
+
+	public void setPageNumber(final String pageNumber) {
+		this.pageNumber = pageNumber;
 	}
 	
 }

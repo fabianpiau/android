@@ -22,10 +22,14 @@ public class UrlConstant {
 	public static final String LANG_FR = "fr";
 	public static final String LANG_EN = "en";
 	public static final String SEPARATOR_URL = "/";
+	public static final String PAGE = "page" + SEPARATOR_URL;
+	public static final CharSequence PAGE_NUMBER_PATTERN = "[PAGE]";
 	public static final CharSequence BASE_URL = "http:" + SEPARATOR_URL + SEPARATOR_URL;
 	public static final CharSequence BASE_CARMABLOG_URL = BASE_URL + "blog." + CARMABLOG_PATTERN;
 	// Full URL
-	public static final String HOME_CARMABLOG_URL = BASE_CARMABLOG_URL + SEPARATOR_URL + LANG_PATTERN + SEPARATOR_URL;
+	public static final String HOME_CARMABLOG_URL = BASE_CARMABLOG_URL + SEPARATOR_URL + LANG_PATTERN + SEPARATOR_URL; // Page 1 - implicit
+	public static final String PAGE_CARMABLOG_URL = HOME_CARMABLOG_URL + PAGE + PAGE_NUMBER_PATTERN + SEPARATOR_URL;
+	public static final String HOME_PAGE_CARMABLOG_URL = HOME_CARMABLOG_URL + PAGE + 1 + SEPARATOR_URL; // Page 1 - explicit
 	public static final String CATEGORY_MANAGEMENT_URL = HOME_CARMABLOG_URL + "management" + SEPARATOR_URL;
 	public static final String CATEGORY_AGILE_PROGRAMMING_URL = HOME_CARMABLOG_URL + "agile-programming" + SEPARATOR_URL;
 	public static final String CATEGORY_TECHNOLOGY_URL = HOME_CARMABLOG_URL + "technology" + SEPARATOR_URL;

@@ -2,6 +2,7 @@ package com.carmablog.util;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.IsNull.nullValue;
 
 import org.junit.Test;
 
@@ -164,5 +165,41 @@ public class CarmaBlogUtilsTest {
 		assertThat(CarmaBlogUtils.isUrlMatchingSinglePost("http://blog.fabianpiau.com/2012/20/10/open-street-map-better-map-than-google-maps/"), is(false));
 
 	}
+
+	@Test
+	public void testIsUrlMatchingPageMultiplePost() {
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/fr/page/2/"), is(true));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/en/page/2/"), is(true));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/page/2/"), is(true));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/fr/page/10/"), is(true));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/fr/page/120/"), is(true));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("fabianpiau.com/fr/page/120/"), is(true));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("blog.fabianpiau.com/fr/page/120/"), is(true));
+		
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/fr/page/"), is(false));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/fr/page/2/test"), is(false));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/technology/"), is(false));
+		assertThat(CarmaBlogUtils.isUrlMatchingPageMultiplePost("http://blog.fabianpiau.com/2012/10/10/open-street-map-better-map-than-google-maps/"), is(false));
+
+	}
+	
+	@Test
+	public void testExtractPageNumberFromUrl() {
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/fr/page/2/"), is(2));
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/en/page/2/"), is(2));
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/page/5/"), is(5));
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/fr/page/10/"), is(10));
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/fr/page/120/"), is(120));
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("fabianpiau.com/fr/page/254/"), is(254));
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("blog.fabianpiau.com/fr/page/1/"), is(1));
+		
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/fr/page/"), nullValue());
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/technology/"), nullValue());
+		assertThat(CarmaBlogUtils.extractPageNumberFromUrl("http://blog.fabianpiau.com/2012/10/10/open-street-map-better-map-than-google-maps/"), nullValue());
+
+	}
+	
+	
+	
 	
 }

@@ -114,38 +114,66 @@ public class CustomWebView extends WebView {
             }
             return false;
         }
- 
 	};
 
     private void onSwipeRight(final UrlContent urlContent) {
-    	
+    	// Single post
     	if (CarmaBlogUtils.isUrlMatchingSinglePost(urlContent.getUrl())) {
     		final String previousPostUrl = ((UrlHtmlContent) urlContent).getPreviousPostUrl();
     		if (previousPostUrl != null && previousPostUrl.length() > 0) {
         		// Display the previous article
-        		show_toast(R.string.message_previous_post);
+    			showToast(R.string.message_previous_post);
         		activity.loadCarmablogHtmlUrl(previousPostUrl);
     		} else {
-    			show_toast(R.string.message_first_post);
+    			showToast(R.string.message_first_post);
     		}        		
+    	}
+    	// Page (with multiple posts)
+    	else if (CarmaBlogUtils.isUrlMatchingPageMultiplePost(urlContent.getUrl())) {
+    		Integer pageNumber = ((UrlHtmlContent) urlContent).getPageNumberAsInteger();
+    		if (pageNumber != null && pageNumber != 1) {
+        		// Display the previous page
+    			pageNumber--;
+    			showToast(R.string.message_previous_page, pageNumber, activity.getTotalNumberOfPages());
+        		activity.loadCarmablogHtmlUrl(CarmaBlogUtils.buildUrlPageMultiplePost(pageNumber, activity.getCurrentLang()));
+    		} else {
+    			showToast(R.string.message_first_page);
+    		} 
     	}
     }
 
     private void onSwipeLeft(final UrlContent urlContent) {
+    	// Single post
     	if (CarmaBlogUtils.isUrlMatchingSinglePost(urlContent.getUrl())) {
     		final String nextPostUrl = ((UrlHtmlContent) urlContent).getNextPostUrl();
     		if (nextPostUrl != null && nextPostUrl.length() > 0) {
         		// Display the next article
-        		show_toast(R.string.message_next_post);
+    			showToast(R.string.message_next_post);
         		activity.loadCarmablogHtmlUrl(nextPostUrl);
     		} else {
-    			show_toast(R.string.message_last_post);
+    			showToast(R.string.message_last_post);
     		}
     	}
+    	// Page (with multiple posts)
+    	else if (CarmaBlogUtils.isUrlMatchingPageMultiplePost(urlContent.getUrl())) {
+    		Integer pageNumber = ((UrlHtmlContent) urlContent).getPageNumberAsInteger();
+    		if (pageNumber != null && activity.getTotalNumberOfPages() != null && pageNumber < activity.getTotalNumberOfPages()) {
+        		// Display the next page
+    			pageNumber++;
+        		showToast(R.string.message_next_page, pageNumber, activity.getTotalNumberOfPages());
+        		activity.loadCarmablogHtmlUrl(CarmaBlogUtils.buildUrlPageMultiplePost(pageNumber, activity.getCurrentLang()));
+    		} else {
+    			showToast(R.string.message_last_page);
+    		} 
+    	}
     }
-    
-	private void show_toast(final int messageId) {
+
+	private void showToast(final int messageId) {
 		Toast.makeText(activity, messageId, Toast.LENGTH_LONG).show();
+	}
+
+	private void showToast(final int messageId, final Integer pageNumber, final Integer pageTotal) {
+		Toast.makeText(activity, activity.getString(messageId, pageNumber, pageTotal), Toast.LENGTH_LONG).show();
 	}
 
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.carmablog.R;
 import com.carmablog.activity.MainActivity;
 import com.carmablog.url.history.model.UrlHtmlContent;
+import com.carmablog.util.CarmaBlogUtils;
 
 /**
  * Retrieve the whole HTML page from the Internet then display it in the WebView.
@@ -65,7 +66,13 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
 			urlContent.setHtmlContent(doc.outerHtml());
 			urlContent.setTitle(doc.body().select("h2").first().text());
 			urlContent.setNextPostUrl(doc.body().select("[rel=next]").attr("href"));
+			urlContent.setPageNumber(doc.body().select(".wp-pagenavi span.current").text());
 			urlContent.setPreviousPostUrl(doc.body().select("[rel=prev]").attr("href"));
+			// Set the number of pages, done the first time with the homepage
+			if (activity.getTotalNumberOfPages() == null) {
+				final String lastPageUrl = doc.body().select("a.last").attr("href");
+				activity.setTotalNumberOfPages(CarmaBlogUtils.extractPageNumberFromUrl(lastPageUrl));
+			}
 			return urlContent;
 		}
 		return null;

@@ -61,6 +61,7 @@ public class MainActivity extends Activity {
 	private UrlContent currentUrlContent;
 	private SharedPreferences preferences;
 	private static final String KEY_CURRENT_LANG = "currentLang";
+	private Integer totalNumberOfPages;
     
 	// URL history helper
 	private UrlContentHistoryHelper urlContentHistoryHelper;
@@ -86,7 +87,7 @@ public class MainActivity extends Activity {
 	    }
 	    
 		// Load the homepage
-		loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
+		loadCarmablogHtmlUrl(UrlConstant.HOME_PAGE_CARMABLOG_URL);
 	}
 
 	private void initializeMyWebView() {
@@ -352,24 +353,28 @@ public class MainActivity extends Activity {
 			case R.id.menu_search:
 				return true;
 			case R.id.menu_home:
-				loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
+				loadCarmablogHtmlUrl(UrlConstant.HOME_PAGE_CARMABLOG_URL);
 				return true;
 			case R.id.menu_en:
 				currentLang = UrlConstant.LANG_EN;
 				changeMenuItemLang(UrlConstant.LANG_EN);
-				if (CarmaBlogUtils.isUrlRssContent(currentUrlContent)) {
-					loadCarmablogRssUrl(currentUrlContent.getUrl());
-				} else {
-					loadCarmablogHtmlUrl(currentUrlContent.getUrl());
+				if (currentUrlContent != null) {
+					if (CarmaBlogUtils.isUrlRssContent(currentUrlContent)) {
+						loadCarmablogRssUrl(currentUrlContent.getUrl());
+					} else {
+						loadCarmablogHtmlUrl(currentUrlContent.getUrl());
+					}
 				}
 				return true;
 			case R.id.menu_fr:
 				currentLang = UrlConstant.LANG_FR;
 				changeMenuItemLang(UrlConstant.LANG_FR);
-				if (CarmaBlogUtils.isUrlRssContent(currentUrlContent)) {
-					loadCarmablogRssUrl(currentUrlContent.getUrl());
-				} else {
-					loadCarmablogHtmlUrl(currentUrlContent.getUrl());
+				if (currentUrlContent != null) {
+					if (CarmaBlogUtils.isUrlRssContent(currentUrlContent)) {
+						loadCarmablogRssUrl(currentUrlContent.getUrl());
+					} else {
+						loadCarmablogHtmlUrl(currentUrlContent.getUrl());
+					}
 				}
 				return true;
 			case R.id.menu_rss:
@@ -399,7 +404,7 @@ public class MainActivity extends Activity {
 				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_EVENT_URL);
 				return true;
 			default:
-				loadCarmablogHtmlUrl(UrlConstant.HOME_CARMABLOG_URL);
+				loadCarmablogHtmlUrl(UrlConstant.HOME_PAGE_CARMABLOG_URL);
 				return true;
 		}
 	}
@@ -479,6 +484,14 @@ public class MainActivity extends Activity {
 
 	public void setCurrentUrlContent(final UrlContent currentUrlContent) {
 		this.currentUrlContent = currentUrlContent;
+	}
+
+	public Integer getTotalNumberOfPages() {
+		return totalNumberOfPages;
+	}
+
+	public void setTotalNumberOfPages(Integer totalNumberOfPages) {
+		this.totalNumberOfPages = totalNumberOfPages;
 	}
 	
 }

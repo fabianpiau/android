@@ -85,7 +85,24 @@ public final class CarmaBlogUtils {
 	 */
 	public static boolean isUrlMatchingSinglePost(final String url) {
 		// check if the URL contains a date in the URL with the /YYYY/MM/DD/ format
-		return url.matches(".*" + UrlConstant.CARMABLOG_PATTERN + "(/fr|/en)?/(20[0-9]{2})/([0-1][0-9])/([0-3][0-9])/.*");
+		return url.matches(".*" + UrlConstant.CARMABLOG_PATTERN + "(/" + UrlConstant.LANG_FR + "|/" + UrlConstant.LANG_EN + ")?/(20[0-9]{2})/([0-1][0-9])/([0-3][0-9])/.*");
+	}
+	
+	/*
+	 * Return true is the URL is a page with several posts.
+	 */
+	public static boolean isUrlMatchingPageMultiplePost(final String url) {
+		// check if the URL contains the page pattern
+		return url.matches(".*" + UrlConstant.CARMABLOG_PATTERN + "(/" + UrlConstant.LANG_FR + "|/" + UrlConstant.LANG_EN + ")?/" + UrlConstant.PAGE +"[0-9]*/");
+	}
+	
+	/*
+	 * Return the page with the good language and page number.
+	 */
+	public static String buildUrlPageMultiplePost(final Integer pageNumber, final String currentLang) {
+		final String localizedUrl = localizeUrl(UrlConstant.PAGE_CARMABLOG_URL, currentLang);
+		// Replace the pattern
+		return localizedUrl.replace(UrlConstant.PAGE_NUMBER_PATTERN, pageNumber.toString()); 
 	}
 
 	/*
@@ -130,11 +147,40 @@ public final class CarmaBlogUtils {
 	public static CharSequence formatDate(final Date date, final String currentLang) {
 		SimpleDateFormat simpleDateFormat;
 		if (currentLang.equals(UrlConstant.LANG_FR)) {
-			 simpleDateFormat = new SimpleDateFormat("EEEE d MMMM yyyy - HH:mm", Locale.FRANCE);
+			 simpleDateFormat = new SimpleDateFormat("EEEE d MMMM yyyy - HH:mm", Locale.FRENCH);
 		} else {
 			 simpleDateFormat = new SimpleDateFormat("EEEE MMMM d, yyyy - K:mm a", Locale.ENGLISH);
 		}
 		return simpleDateFormat.format(date);
+	}
+
+	/*
+	 * Extract the page number in the URL. 
+	 */
+	public static Integer extractPageNumberFromUrl(final String url) {
+		if (!isUrlMatchingPageMultiplePost(url)) {
+			return null;
+		}
+		final String[] parts = url.split(UrlConstant.PAGE);
+		if (parts.length < 1) {
+			return null;
+		}
+		final String pageNumber = parts[1].split(UrlConstant.SEPARATOR_URL)[0];
+		return convertStringToInteger(pageNumber);
+	}
+	
+	/*
+	 * Convert a String to Integer.
+	 */
+	public static Integer convertStringToInteger(final String integerAsString) {
+		if (integerAsString == null || integerAsString.length() == 0) {
+			return null;
+		}
+		try {
+			return Integer.parseInt(integerAsString);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
