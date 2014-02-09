@@ -38,6 +38,7 @@ public class CustomWebView extends WebView {
 	// To know is the WebView is zoomed out
 	private boolean isZoomedOut = true;
 	private Float originalScale;
+	private final static float ERROR_MARGIN = 0.05F;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	public CustomWebView(final HtmlActivity activity) {
@@ -83,7 +84,7 @@ public class CustomWebView extends WebView {
 				if (originalScale == null) {
 					originalScale = oldScale;
 				}
-				if (newScale <= originalScale) {
+				if (newScale <= originalScale + ERROR_MARGIN) {
 					isZoomedOut = true;
 				} else {
 					isZoomedOut = false;
