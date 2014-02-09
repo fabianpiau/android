@@ -35,6 +35,7 @@ public class UrlConstant {
 	public static final String CATEGORY_TECHNOLOGY_URL = HOME_CARMABLOG_URL + "technology" + SEPARATOR_URL;
 	public static final String CATEGORY_LINUX_URL = HOME_CARMABLOG_URL + "linux" + SEPARATOR_URL;
 	public static final String CATEGORY_EVENT_URL = HOME_CARMABLOG_URL + "event" + SEPARATOR_URL;
+	public static final String CATEGORY_ABOUT_URL = HOME_CARMABLOG_URL + "android-app" + SEPARATOR_URL;
 	
 	// Search URLs
 	public static final CharSequence QUERY_SEARCH_TERM = "?s=";

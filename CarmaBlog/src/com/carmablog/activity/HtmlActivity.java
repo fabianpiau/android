@@ -316,6 +316,9 @@ public class HtmlActivity extends Activity {
 			case R.id.menu_event:
 				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_EVENT_URL);
 				return true;
+			case R.id.menu_about:
+				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_ABOUT_URL);
+				return true;
 			default:
 				loadCarmablogHtmlUrl(UrlConstant.HOME_PAGE_CARMABLOG_URL);
 				return true;

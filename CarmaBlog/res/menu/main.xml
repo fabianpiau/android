@@ -39,7 +39,7 @@
         android:showAsAction="never"
         android:title="@string/menu_share"
         android:actionProviderClass="android.widget.ShareActionProvider"
-        android:icon="@android:drawable/ic_menu_share"/>
+        android:icon="@drawable/share"/>
     
     <!--  Post categories -->
     <item
@@ -89,5 +89,12 @@
 		        android:icon="@drawable/event"/>
 		</menu>
 	</item>
+    
+    <!-- About -->
+    <item
+        android:id="@+id/menu_about"
+        android:showAsAction="never"
+        android:title="@string/menu_about"
+        android:icon="@drawable/about"/>
     
 </menu>

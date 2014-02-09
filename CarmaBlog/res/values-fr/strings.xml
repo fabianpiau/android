@@ -18,6 +18,7 @@
     <string name="menu_technology">Technologie</string>
     <string name="menu_linux">Linux</string>
     <string name="menu_event">Ev&#233;nement</string>
+    <string name="menu_about">A propos</string>
     
     <string name="title_share">Partager cet article avec&#8230;</string>
     <string name="message_share_app_not_found">Aucune application de partage trouv&#233;e&#8230;</string>
