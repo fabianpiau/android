@@ -26,12 +26,12 @@
     <string name="message_loading">Loading&#8230;</string>
     <string name="message_timeout">Unable to connect to this page.\nConnection timeout&#8230;</string>
     
-    <string name="message_next_post">Next post</string>
-    <string name="message_previous_post">Previous post</string>
+    <string name="message_next_post">Next post &#8250;</string>
+    <string name="message_previous_post">&#8249; Previous post</string>
     <string name="message_first_post">First post reached&#8230;</string>
     <string name="message_last_post">Last post reached&#8230;</string>
-    <string name="message_next_page">Next page: %1$d/%2$d</string>
-    <string name="message_previous_page">Previous page: %1$d/%2$d</string>
+    <string name="message_next_page">Next page: %1$d/%2$d &#8250;</string>
+    <string name="message_previous_page">&#8249; Previous page: %1$d/%2$d</string>
     <string name="message_first_page">First page reached&#8230;</string>
     <string name="message_last_page">Last page reached&#8230;</string>
     

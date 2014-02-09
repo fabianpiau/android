@@ -25,12 +25,12 @@
     <string name="message_loading">Chargement en cours&#8230;</string>
     <string name="message_timeout">Impossible d\'acc&#233;der &#224; cette page.\nD&#233;lai de connexion d&#233;pass&#233;&#8230;</string>
     
-    <string name="message_next_post">Article suivant</string>
-    <string name="message_previous_post">Article pr&#233;c&#233;dent</string>
+    <string name="message_next_post">Article suivant &#8250;</string>
+    <string name="message_previous_post">&#8249; Article pr&#233;c&#233;dent</string>
     <string name="message_first_post">Premier article atteint&#8230;</string>
     <string name="message_last_post">Dernier article atteint&#8230;</string>
-    <string name="message_next_page">Page suivante: %1$d/%2$d</string>
-    <string name="message_previous_page">Page pr&#233;c&#233;dente: %1$d/%2$d</string>
+    <string name="message_next_page">Page suivante: %1$d/%2$d &#8250;</string>
+    <string name="message_previous_page">&#8249; Page pr&#233;c&#233;dente: %1$d/%2$d</string>
     <string name="message_first_page">Premi&#233;re page atteinte&#8230;</string>
     <string name="message_last_page">Derni&#233;re page atteinte&#8230;</string>
      

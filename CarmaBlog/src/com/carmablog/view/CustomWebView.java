@@ -27,8 +27,17 @@ public class CustomWebView extends WebView {
 	// HTML activity
 	private HtmlActivity activity;
 	
-	// A custom gesture detector to detect left <-> right fling
+	// A custom gesture detector
+	// to detect left <-> right fling and enable double tap zoom
 	private GestureDetector gestureDetector;
+	
+	// A WebView client 
+	// to handle links and navigation history
+	private WebViewClient webViewClient;
+	
+	// To know is the WebView is zoomed out
+	private boolean isZoomedOut = true;
+	private Float originalScale;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	public CustomWebView(final HtmlActivity activity) {
@@ -40,10 +49,20 @@ public class CustomWebView extends WebView {
 		getSettings().setSupportZoom(true);
 		getSettings().setJavaScriptEnabled(true); // For syntax highlighting
 
-		// A client to handle links and navigation history
-		final WebViewClient webViewClient = new WebViewClient() {
+		initializeWebViewClient();
+		initializeGestureDetector();
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
+	}
+	
+	private void initializeWebViewClient() {
+		webViewClient = new WebViewClient() {
+			
 			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
 				super.shouldOverrideUrlLoading(view, url);
 				if (CarmaBlogUtils.isUrlMatchingForApp(url)) {
 					// Still on CarmaBlog
@@ -58,61 +77,100 @@ public class CustomWebView extends WebView {
 				}
 				return true;
 			}
+			
+			@Override
+			public void onScaleChanged(final WebView view, final float oldScale, final float newScale) {
+				if (originalScale == null) {
+					originalScale = oldScale;
+				}
+				if (newScale <= originalScale) {
+					isZoomedOut = true;
+				} else {
+					isZoomedOut = false;
+				}				
+				super.onScaleChanged(view, oldScale, newScale);
+			}
 		};
 		setWebViewClient(webViewClient);
+	}
+
+	private void initializeGestureDetector() {
+		final GestureDetector.SimpleOnGestureListener sogl = new GestureDetector.SimpleOnGestureListener() {
+			
+			private static final int SWIPE_THRESHOLD = 200;
+	        private static final int SWIPE_VELOCITY_THRESHOLD = 200;
+	        private boolean lastZoomOutResult = true;
+	
+	        @Override
+	        public boolean onDown(MotionEvent e) {
+	            return false;
+	        }
+	        
+	        @Override
+	        public boolean onDoubleTap(MotionEvent e) {
+	        	if (lastZoomOutResult) {
+	        		// We did a zoom out last time
+	        		lastZoomOutResult = false;
+	        		CustomWebView.this.zoomIn(); // Call 2 times for a bigger zoom
+	        		CustomWebView.this.zoomIn();
+	        	} else {
+	        	    // We did a zoom in last time
+	        		lastZoomOutResult = CustomWebView.this.zoomOut();
+	        		if (!lastZoomOutResult) {
+	        			// Already zoom out (the user has played with the zoom in between...)
+	        			lastZoomOutResult = false;
+	            		CustomWebView.this.zoomIn();
+	            		CustomWebView.this.zoomIn();
+	        		} else {
+	        			CustomWebView.this.zoomOut();
+	        		}
+	            }
+				return true;
+	        }
+	        
+	        @Override
+	        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+	            try {
+	                float diffY = e2.getY() - e1.getY();
+	                float diffX = e2.getX() - e1.getX();
+	                if (Math.abs(diffX) > Math.abs(diffY)) {
+	                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+	                    	if (!isZoomActive()) { // We don't want to fling while the zoom is active
+		                    	final UrlContent urlContent = activity.getCurrentUrlContent();
+		                        if (diffX > 0) {
+		                            onSwipeRight(urlContent);
+		                            return true;
+		                        } else {
+		                            onSwipeLeft(urlContent);
+		                            return true;
+		                        }
+	                    	}
+	                    }
+	                } else {
+	                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+	                        if (diffY > 0) {
+	                            // onSwipeBottom() - WebView normal behavior
+	                            return false;
+	                        } else {
+	                            // onSwipeTop() - WebView normal behavior
+	                            return false;
+	                        }
+	                    }
+	                }
+	            } catch (Exception exception) {
+	                Log.e("Touch error", exception.getStackTrace().toString());
+	            }
+	            return false;
+	        }
+	
+			private boolean isZoomActive() {
+				return !isZoomedOut;
+			}
+		};
 		gestureDetector = new GestureDetector(activity, sogl);
 	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
-	}
-
-	final GestureDetector.SimpleOnGestureListener sogl = new GestureDetector.SimpleOnGestureListener() {
-		
-		private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return false;
-        }
-        
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                float diffY = e2.getY() - e1.getY();
-                float diffX = e2.getX() - e1.getX();
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                    	final UrlContent urlContent = activity.getCurrentUrlContent();
-                        if (diffX > 0) {
-                            onSwipeRight(urlContent);
-                            return true;
-                        } else {
-                            onSwipeLeft(urlContent);
-                            return true;
-                        }
-                    }
-                } else {
-                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffY > 0) {
-                            // onSwipeBottom() - WebView normal behavior
-                            return false;
-                        } else {
-                            // onSwipeTop() - WebView normal behavior
-                            return false;
-                        }
-                    }
-                }
-            } catch (Exception exception) {
-                Log.e("Touch error", exception.getStackTrace().toString());
-            }
-            return false;
-        }
-	};
-
-    private void onSwipeRight(final UrlContent urlContent) {
+	
+	private void onSwipeRight(final UrlContent urlContent) {
     	// Single post
     	if (CarmaBlogUtils.isUrlMatchingSinglePost(urlContent.getUrl())) {
     		final String previousPostUrl = ((UrlHtmlContent) urlContent).getPreviousPostUrl();
