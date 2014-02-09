@@ -1,64 +1,50 @@
-package com.carmablog.url.history;
+package com.carmablog.url.manager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
 
-import com.carmablog.activity.MainActivity;
+import com.carmablog.activity.HtmlActivity;
 import com.carmablog.url.common.UrlCallMethod;
 import com.carmablog.url.common.UrlConstant;
-import com.carmablog.url.history.model.UrlContent;
-import com.carmablog.url.history.model.UrlHtmlContent;
-import com.carmablog.url.history.model.UrlRssContent;
+import com.carmablog.url.model.UrlContent;
+import com.carmablog.url.model.UrlHtmlContent;
 import com.carmablog.util.CarmaBlogUtils;
 
 /**
- * Helper to manage URL content history.
+ * History manager for URL content (HTML only).
  * @author fpiau
  *
  */
-public class UrlContentHistoryHelper {
+public class UrlContentHistoryManager {
 
 	// Parent main activity
-    private MainActivity activity;
+    private HtmlActivity activity;
     
-    // Cache manager
-    private UrlContentCacheManager cacheManager;
-    
-	// List of visited URL without their content
+	// List of visited URL without their content (the cache is here for that)
 	private List<String> urlHistorys = new ArrayList<String>();
     
     /*
      * Constructor.
      */
-	public UrlContentHistoryHelper(final MainActivity activity, final UrlContentCacheManager cacheManager) {
+	public UrlContentHistoryManager(final HtmlActivity activity) {
 		this.activity = activity;
-		this.cacheManager = cacheManager;
 	}
 
 	/*
 	 * Add a URL in the navigation history.
 	 */
-	public void addUrlInHistory(final UrlContent urlContent) {
-		// Add only if it is a URL from CarmaBlog
+	public void addUrlInHistory(final UrlHtmlContent urlContent) {
 		final String url = urlContent.getUrl();
+		// Add only if it is a URL from CarmaBlog
 		if (CarmaBlogUtils.isUrlMatchingForApp(url) &&
 				// and if it has not been added yet (just before)
 				(urlHistorys.isEmpty() || ((!urlHistorys.isEmpty() && !urlHistorys.get(0).equals(url))))) {
 			urlHistorys.add(0, url);
 		}
-		// Add in cache
-		cacheManager.addInCache(urlContent);
 	}
 
-	/*
-	 * Return the URL content from the cache when a match is found.
-	 */
-	public UrlContent getURLContentFromURL(final String url) {
-		return cacheManager.getFromCache(url);
-	}
-	
 	/*
 	 * Navigate through the history to know which URL to load.
 	 * Remove the displayed page URL from the history.
@@ -88,27 +74,17 @@ public class UrlContentHistoryHelper {
 	}
 
 	/*
-	 * Take care of loading the URL depending on the content.
+	 * Take care of the URL loading depending on the cache availability.
 	 */
 	private void loadUrl(final String url) {
 		// Get the content from the cache
-		final UrlContent urlContent = cacheManager.getFromCache(url);
+		final UrlContent urlContent = activity.getUrlContentCacheManager().getFromCache(url);
 		if (urlContent == null) {
-			Log.d("History", "URL '" + url + "' is in history but its content has not been found in the cache. Need to load the page from internet.");
-			// This is a single post HTML content (RSS always stay in cache)
+			Log.d("UrlContentHistoryManager", "URL '" + url + "' is in history but its content has not been found in the cache. Need to load the page from internet again.");
 			activity.loadCarmablogHtmlUrl(url);
 		} else {
 			// Load from the cache
-			if (CarmaBlogUtils.isUrlRssContent(urlContent)) {
-				// This is about RSS
-				activity.setFocusOnListView();
-				activity.loadCarmablogRssUrl((UrlRssContent)urlContent);
-	
-			} else {
-				// This is a single post HTML content
-				activity.setFocusOnWebView(url);
-				activity.loadCarmablogHtmlUrl((UrlHtmlContent)urlContent);
-			}
+			activity.loadCarmablogHtmlUrlFromCache((UrlHtmlContent)urlContent);
 		}
 	}
 		

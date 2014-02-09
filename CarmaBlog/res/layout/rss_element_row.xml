@@ -5,39 +5,39 @@
     android:padding="6dp" >
 
     <ImageView
-        android:id="@+id/row_post_category"
+        android:id="@+id/rss_element_category"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dp"
-        android:contentDescription="@string/row_post_category"
+        android:contentDescription="@string/rss_element_category"
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:id="@+id/row_post_date"
+        android:id="@+id/rss_element_date"
         android:layout_width="fill_parent"
         android:layout_height="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/row_post_category"
+        android:layout_toRightOf="@id/rss_element_category"
         android:singleLine="true"
-        android:contentDescription="@string/row_post_date"
+        android:contentDescription="@string/rss_element_date"
         android:textSize="12sp"/>
 
     <TextView
-        android:id="@+id/row_post_title"
+        android:id="@+id/rss_element_title"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/row_post_date"
+        android:layout_above="@id/rss_element_date"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/row_post_category"
+        android:layout_toRightOf="@id/rss_element_category"
         android:gravity="center_vertical"
         android:ellipsize="end"
         android:singleLine="false"
-        android:contentDescription="@string/row_post_title"
+        android:contentDescription="@string/rss_element_title"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </RelativeLayout> 

@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.carmablog.url.common.UrlConstant;
-import com.carmablog.url.history.model.UrlContent;
-import com.carmablog.url.history.model.UrlRssContent;
 
 /**
  * Utilities class.
@@ -95,6 +93,14 @@ public final class CarmaBlogUtils {
 		// check if the URL contains the page pattern
 		return url.matches(".*" + UrlConstant.CARMABLOG_PATTERN + "(/" + UrlConstant.LANG_FR + "|/" + UrlConstant.LANG_EN + ")?/" + UrlConstant.PAGE +"[0-9]*/");
 	}
+
+	/*
+	 * Return true if the URL is a RSS feed.
+	 */
+	public static boolean isUrlMatchingRssFeed(final String url) {
+		// check if the URL contains the feed pattern
+		return url.matches(".*" + UrlConstant.CARMABLOG_PATTERN + "(/" + UrlConstant.LANG_FR + "|/" + UrlConstant.LANG_EN + ")?/" + UrlConstant.RSS_PATTERN +"/");
+	}
 	
 	/*
 	 * Return the page with the good language and page number.
@@ -132,13 +138,6 @@ public final class CarmaBlogUtils {
 				    && !(url.contains(UrlConstant.TWITTER_SHARING_PATTERN))
 				      && !(url.contains(UrlConstant.GOOGLE_SHARING_PATTERN))
 				        && !(url.contains(UrlConstant.LINKEDIN_SHARING_PATTERN));
-	}
-	
-	/*
-	 * Return true if the URL content represents a RSS feed.
-	 */
-	public static boolean isUrlRssContent(final UrlContent urlContent) {
-		return urlContent instanceof UrlRssContent;
 	}
 	
 	/*

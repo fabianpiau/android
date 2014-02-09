@@ -9,8 +9,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.carmablog.R;
-import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.model.UrlHtmlContent;
+import com.carmablog.activity.HtmlActivity;
+import com.carmablog.url.model.UrlHtmlContent;
 import com.carmablog.util.CarmaBlogUtils;
 
 /**
@@ -21,8 +21,8 @@ import com.carmablog.util.CarmaBlogUtils;
  */
 public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlContent> {
 
-	// Parent main activity
-    private MainActivity activity;
+	// HTML activity
+    private HtmlActivity activity;
     
     // Progress dialog box
     private ProgressDialog progressDialog;
@@ -33,7 +33,7 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
     /*
      * Constructor.
      */
-	public RetrieveHtmlRemoteTask(final MainActivity activity) {
+	public RetrieveHtmlRemoteTask(final HtmlActivity activity) {
 		this.activity = activity;
 		progressDialog = new ProgressDialog(activity);
 	}

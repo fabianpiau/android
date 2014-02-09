@@ -17,9 +17,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.carmablog.R;
-import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.model.UrlRssContent;
-import com.carmablog.url.history.model.UrlRssElement;
+import com.carmablog.activity.RssActivity;
+import com.carmablog.url.model.UrlRssContent;
+import com.carmablog.url.model.UrlRssElement;
 
 /**
  * Retrieve the RSS feed from the Internet then display it in the ListView.
@@ -29,8 +29,8 @@ import com.carmablog.url.history.model.UrlRssElement;
  */
 public class RetrieveRssRemoteTask extends AsyncTask<String, Void, UrlRssContent> {
 
-	// Parent main activity
-    private MainActivity activity;
+	// RSS activity
+    private RssActivity activity;
     
     // Progress dialog box
     private ProgressDialog progressDialog;
@@ -41,7 +41,7 @@ public class RetrieveRssRemoteTask extends AsyncTask<String, Void, UrlRssContent
     /*
      * Constructor.
      */
-	public RetrieveRssRemoteTask(final MainActivity activity) {
+	public RetrieveRssRemoteTask(final RssActivity activity) {
 		this.activity = activity;
 		progressDialog = new ProgressDialog(activity);
 	}
@@ -96,13 +96,12 @@ public class RetrieveRssRemoteTask extends AsyncTask<String, Void, UrlRssContent
 			progressDialog.dismiss();
 	    }
 		if (exception == null) {
-			activity.updateHistoryAndCurrentState(result);
+			activity.getUrlContentCacheManager().addRssInCache(result);
 			// Refresh the ListView with the urlRssElements
 			activity.updateListView(result.getUrlRssElements());
 		} else {
 			// An error occurred with Jsoup
 			// Probably a connection error
-			activity.getMyWebView().loadUrl("file:///android_asset/connection_timeout.html");
 			Toast.makeText(activity.getApplicationContext(), R.string.message_timeout, Toast.LENGTH_LONG).show();
 		}
 	}

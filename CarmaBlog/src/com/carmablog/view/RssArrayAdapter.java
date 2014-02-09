@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.carmablog.R;
-import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.model.UrlRssElement;
+import com.carmablog.activity.RssActivity;
+import com.carmablog.url.model.UrlRssElement;
 import com.carmablog.util.CarmaBlogUtils;
 
 /**
@@ -20,13 +20,19 @@ import com.carmablog.util.CarmaBlogUtils;
  * @author fpiau
  *
  */
-public class PostArrayAdapter extends ArrayAdapter<UrlRssElement> {
+public class RssArrayAdapter extends ArrayAdapter<UrlRssElement> {
 	
-	private final MainActivity activity;
+	// RSS activity
+	private final RssActivity activity;
+	
+	// List of RSS elements
 	private final List<UrlRssElement> urlRssElements;
 
-	public PostArrayAdapter(final MainActivity activity, final List<UrlRssElement> urlRssElements) {
-		super(activity, R.layout.row_post, urlRssElements);
+    /*
+     * Constructor.
+     */
+	public RssArrayAdapter(final RssActivity activity, final List<UrlRssElement> urlRssElements) {
+		super(activity, R.layout.rss_element_row, urlRssElements);
 		this.activity = activity;
 		this.urlRssElements = urlRssElements;
 	}
@@ -36,11 +42,11 @@ public class PostArrayAdapter extends ArrayAdapter<UrlRssElement> {
 		final LayoutInflater inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		final View rowPostView = inflater.inflate(R.layout.row_post, parent, false);
+		final View rowPostView = inflater.inflate(R.layout.rss_element_row, parent, false);
 
-		final ImageView categoryImage = (ImageView) rowPostView.findViewById(R.id.row_post_category);
-		final TextView titleText = (TextView) rowPostView.findViewById(R.id.row_post_title);
-		final TextView dateText = (TextView) rowPostView.findViewById(R.id.row_post_date);
+		final ImageView categoryImage = (ImageView) rowPostView.findViewById(R.id.rss_element_category);
+		final TextView titleText = (TextView) rowPostView.findViewById(R.id.rss_element_title);
+		final TextView dateText = (TextView) rowPostView.findViewById(R.id.rss_element_date);
 
 		final UrlRssElement post = urlRssElements.get(position);
 		

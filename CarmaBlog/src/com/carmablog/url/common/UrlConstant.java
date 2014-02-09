@@ -41,7 +41,7 @@ public class UrlConstant {
 	public static final CharSequence QUERY_SEARCH_ACTION = "&submit=Rechercher";
 	
 	// RSS URL
-	private static final CharSequence RSS_PATTERN = "feed";
+	public static final CharSequence RSS_PATTERN = "feed";
 	public static final String RSS_CARMABLOG_URL = BASE_CARMABLOG_URL + SEPARATOR_URL + LANG_PATTERN + SEPARATOR_URL + RSS_PATTERN + SEPARATOR_URL;
 
 }

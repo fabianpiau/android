@@ -1,4 +1,4 @@
-package com.carmablog.url.history.model;
+package com.carmablog.url.model;
 
 import com.carmablog.util.CarmaBlogUtils;
 

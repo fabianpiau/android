@@ -3,19 +3,17 @@ package com.carmablog.view;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.carmablog.R;
-import com.carmablog.activity.MainActivity;
-import com.carmablog.url.history.model.UrlContent;
-import com.carmablog.url.history.model.UrlHtmlContent;
+import com.carmablog.activity.HtmlActivity;
+import com.carmablog.url.model.UrlContent;
+import com.carmablog.url.model.UrlHtmlContent;
 import com.carmablog.util.CarmaBlogUtils;
 
 /**
@@ -26,11 +24,14 @@ import com.carmablog.util.CarmaBlogUtils;
  */
 public class CustomWebView extends WebView {
 
-	private MainActivity activity;
+	// HTML activity
+	private HtmlActivity activity;
+	
+	// A custom gesture detector to detect left <-> right fling
 	private GestureDetector gestureDetector;
 
-	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
-	public CustomWebView(final MainActivity activity) {
+	@SuppressLint("SetJavaScriptEnabled")
+	public CustomWebView(final HtmlActivity activity) {
 		super(activity);
 		this.activity = activity;
 
@@ -39,11 +40,6 @@ public class CustomWebView extends WebView {
 		getSettings().setSupportZoom(true);
 		getSettings().setJavaScriptEnabled(true); // For syntax highlighting
 
-		// To avoid flickering
-		if (Integer.valueOf(android.os.Build.VERSION.SDK_INT) >= Build.VERSION_CODES.HONEYCOMB) {
-			setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-		}
-		
 		// A client to handle links and navigation history
 		final WebViewClient webViewClient = new WebViewClient() {
 			@Override

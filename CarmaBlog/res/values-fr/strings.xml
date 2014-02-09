@@ -17,7 +17,8 @@
     <string name="menu_linux">Linux</string>
     <string name="menu_event">Ev&#233;nement</string>
     
-    <string name="share_title">Partager cet article avec&#8230;</string>
+    <string name="title_share">Partager cet article avec&#8230;</string>
+    <string name="message_share_app_not_found">Aucune application de partage trouv&#233;e&#8230;</string>
     
     <string name="message_loading">Chargement en cours&#8230;</string>
     <string name="message_timeout">Impossible d\'acc&#233;der &#224; cette page.\nD&#233;lai de connexion d&#233;pass&#233;&#8230;</string>
@@ -31,8 +32,8 @@
     <string name="message_first_page">Premi&#233;re page atteinte&#8230;</string>
     <string name="message_last_page">Derni&#233;re page atteinte&#8230;</string>
      
-    <string name="row_post_category">Cat&#233;gorie</string>
-    <string name="row_post_title">Titre de l\'article</string>
-    <string name="row_post_date">Date de publication</string>
+    <string name="rss_element_category">Cat&#233;gorie</string>
+    <string name="rss_element_title">Titre de l\'article</string>
+    <string name="rss_element_date">Date de publication</string>
     
 </resources>
