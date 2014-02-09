@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">CarmaBlog</string>
+    <string name="rss_name">CarmaBlog - Recent Posts</string>
     
     <string name="menu_search">Search</string>
     <string name="menu_home">Home</string>
