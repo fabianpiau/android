@@ -1,0 +1,50 @@
+/*
+ * Normal style (black on white).
+ */
+ 
+body {
+    background: none repeat scroll 0 0 #FFFFFF !important;
+}
+ 
+h2, .post blockquote, .author, .author a, .date, .comment.comment_author .author, .comment.comment_author .author a, .comment.comment_author .date, .comment.comment_author h4 {
+	color:#4f4d48 !important;
+}
+
+#frame, #footer_content_sidebars {
+    background-color: #FFFFFF !important;
+}
+
+body {
+    color: #232323 !important;
+}
+
+a {
+    color: #0061A8 !important;
+}
+
+.info {
+    background: none repeat scroll 0 0 #F1EACA !important;
+}
+
+div.sharedaddy div.sd-block {
+    border-top: 1px solid rgba(0, 0, 0, 0.13) !important;
+}
+
+div.sharedaddy a.sd-button {
+    background: -moz-linear-gradient(center top , #F7F7F7 0%, #EFEFEF 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #DDDDDD !important;
+    box-shadow: 0 1px 0 #FFFFFF inset !important;
+    color: #000000 !important;
+
+}
+
+.wp-pagenavi a, .wp-pagenavi span.pages, .wp-pagenavi span.extend {
+    background: none repeat scroll 0 0 #FFFFFF !important;
+    border: 1px solid #DCDCDC !important;
+    color: #707070 !important;
+}
+
+.wp-caption {
+    background-color: #F3F3F3 !important;
+    border: 1px solid #DDDDDD !important;
+}

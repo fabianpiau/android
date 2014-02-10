@@ -1,0 +1,49 @@
+/*
+ * Night style (white on black).
+ */
+
+body {
+    background: none repeat scroll 0 0 #1F2021 !important;
+}
+
+h2, .post blockquote, .author, .author a, .date, .comment.comment_author .author, .comment.comment_author .author a, .comment.comment_author .date, .comment.comment_author h4 {
+	color:#DED9CD !important;
+}
+
+#frame, #footer_content_sidebars {
+    background-color: #1F2021 !important;
+}
+
+body {
+    color: #D3D3D3 !important;
+}
+
+a {
+    color: #3D90CB !important;
+}
+
+.info {
+    background: none repeat scroll 0 0 #494949 !important;
+}
+
+div.sharedaddy div.sd-block {
+    border-color: #BBBBBB !important;
+}
+
+div.sharedaddy a.sd-button {
+    background: #505050 !important;
+    border: 1px solid #262626 !important;
+    box-shadow: 0 1px 0 #000000 inset !important;
+    color: #FFFFFF !important;
+}
+
+.wp-pagenavi a, .wp-pagenavi span.pages, .wp-pagenavi span.extend {
+    background: none repeat scroll 0 0 #515151 !important;
+    border: 1px solid #3E3E3F !important;
+    color: #EDEDED !important;
+}
+
+.wp-caption {
+    background-color: #404040 !important;
+    border: 1px solid #383838 !important;
+}

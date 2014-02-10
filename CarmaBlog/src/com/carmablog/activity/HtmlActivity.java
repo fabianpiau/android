@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -56,8 +57,10 @@ public class HtmlActivity extends Activity {
 	private UrlContent currentUrlContent;
 	private SharedPreferences preferences;
 	private static final String KEY_CURRENT_LANG = "currentLang";
+	private boolean nightMode;
+	private static final String KEY_NIGHT_MODE_ACTIVE = "nightMode";
 	private Integer totalNumberOfPages;
-    
+	    
 	// Exchange with RSS activity
 	private static final int GET_URL_REQUEST_CODE = 1;
 	
@@ -73,7 +76,7 @@ public class HtmlActivity extends Activity {
 		
 		urlContentHistoryManager = new UrlContentHistoryManager(this);
 		
-		// Restore language from preferences
+		// Restore settings from preferences
 		preferences = getPreferences(MODE_PRIVATE);
 		myApplication.setCurrentLang(preferences.getString(KEY_CURRENT_LANG, null));
 	    if (getCurrentLang() == null) {
@@ -81,6 +84,7 @@ public class HtmlActivity extends Activity {
 	    	// By default, use the language of the device
 	    	myApplication.initializeLanguageFromDevice();
 	    }
+		nightMode = preferences.getBoolean(KEY_NIGHT_MODE_ACTIVE, false);
 	    
 		// Load the homepage
 		loadCarmablogHtmlUrl(UrlConstant.HOME_PAGE_CARMABLOG_URL);
@@ -88,6 +92,7 @@ public class HtmlActivity extends Activity {
 
 	private void initializeMyWebView() {
 		myWebView = new CustomWebView(this);
+		myWebView.setBackgroundColor(Color.parseColor("#1F2021"));
 		setContentView(myWebView);
 	}
 
@@ -95,9 +100,10 @@ public class HtmlActivity extends Activity {
     protected void onStop(){
 		super.onStop();
 		
-		// Save last language used in preferences for the next time
+		// Save last language used and reading mode in preferences for the next time
 		final SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(KEY_CURRENT_LANG, getCurrentLang()).commit();
+		editor.putBoolean(KEY_NIGHT_MODE_ACTIVE, nightMode).commit();
     }
 
 	@Override
@@ -149,6 +155,8 @@ public class HtmlActivity extends Activity {
 	public void loadCarmablogHtmlUrlFromCache(final UrlHtmlContent urlContent) {
 		updateHistoryAndCurrentState(urlContent);
 		defineShareButtonVisibility(null);
+		// Refresh the reading mode
+		refreshReadingMode(urlContent);
 		// Simply display it in the WebView
 		myWebView.loadDataWithBaseURL("file:///android_asset/", urlContent.getHtmlContent(), "text/html", "UTF-8", null);
 	}
@@ -239,8 +247,10 @@ public class HtmlActivity extends Activity {
 			searchItem.setVisible(false);
 		}
 	    
-		changeMenuItemLang(getCurrentLang());
-
+		// Show switchers
+		changeMenuItemLang();
+		changeReadingMode();
+		
 		return true;
 	}
 	
@@ -276,14 +286,14 @@ public class HtmlActivity extends Activity {
 				return true;
 			case R.id.menu_en:
 				myApplication.setCurrentLang(UrlConstant.LANG_EN);
-				changeMenuItemLang(UrlConstant.LANG_EN);
+				changeMenuItemLang();
 				if (currentUrlContent != null) {
 					loadCarmablogHtmlUrl(currentUrlContent.getUrl());
 				}
 				return true;
 			case R.id.menu_fr:
 				myApplication.setCurrentLang(UrlConstant.LANG_FR);
-				changeMenuItemLang(UrlConstant.LANG_FR);
+				changeMenuItemLang();
 				if (currentUrlContent != null) {
 					loadCarmablogHtmlUrl(currentUrlContent.getUrl());
 				}
@@ -316,6 +326,22 @@ public class HtmlActivity extends Activity {
 			case R.id.menu_event:
 				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_EVENT_URL);
 				return true;
+			case R.id.menu_mode_normal:
+				nightMode = false;
+					changeReadingMode();
+				if (currentUrlContent != null) {
+					// Go back to the normal mode
+					refreshReadingMode((UrlHtmlContent)currentUrlContent);
+				}
+				return true;
+			case R.id.menu_mode_night:
+				nightMode = true;
+					changeReadingMode();
+					// Go to the night mode
+					if (currentUrlContent != null) {
+					refreshReadingMode((UrlHtmlContent)currentUrlContent);
+				}
+				return true;
 			case R.id.menu_about:
 				loadCarmablogHtmlUrl(UrlConstant.CATEGORY_ABOUT_URL);
 				return true;
@@ -326,15 +352,45 @@ public class HtmlActivity extends Activity {
 	}
 
 	/*
+	 * Change the item to change reading mode.
+	 */
+	private void changeReadingMode() {
+		final MenuItem nightModeMenuItem = menu.findItem(R.id.menu_mode_night);
+		final MenuItem normalModeMenuItem = menu.findItem(R.id.menu_mode_normal);
+		// Modify the current HTML content with jsoup to add or remove the CSS
+		if (isNightMode()) {
+			nightModeMenuItem.setVisible(false);
+			normalModeMenuItem.setVisible(true);
+		} else {
+			normalModeMenuItem.setVisible(false);
+			nightModeMenuItem.setVisible(true);
+		}
+	}
+
+	/*
+	 * Replace the CSS according to the mode selected.
+	 */
+	private void refreshReadingMode(final UrlHtmlContent currentUrlContent) {
+		// Replace the CSS mode in the HTML content
+		if (isNightMode()) {
+			currentUrlContent.setHtmlContent(currentUrlContent.getHtmlContent().replace("normal_style.css", "night_style.css"));
+		} else {
+			currentUrlContent.setHtmlContent(currentUrlContent.getHtmlContent().replace("night_style.css", "normal_style.css"));
+		}
+		// Reload the WebView	
+		myWebView.loadDataWithBaseURL("file:///android_asset/", currentUrlContent.getHtmlContent(), "text/html", "UTF-8", null);
+	}
+
+	/*
 	 * Change the item to change language.
 	 */
-	private void changeMenuItemLang(CharSequence lang) {
+	private void changeMenuItemLang() {
 		final MenuItem langEnMenuItem = menu.findItem(R.id.menu_en);
 		final MenuItem langFrMenuItem = menu.findItem(R.id.menu_fr);
 		if (getCurrentLang().equals(UrlConstant.LANG_FR)) {
 			// English switcher
-			langEnMenuItem.setVisible(true);
 			langFrMenuItem.setVisible(false);
+			langEnMenuItem.setVisible(true);
 		} else {
 			// French switcher	
 			langEnMenuItem.setVisible(false);
@@ -395,12 +451,16 @@ public class HtmlActivity extends Activity {
 		return totalNumberOfPages;
 	}
 
-	public void setTotalNumberOfPages(Integer totalNumberOfPages) {
+	public void setTotalNumberOfPages(final Integer totalNumberOfPages) {
 		this.totalNumberOfPages = totalNumberOfPages;
 	}
 	
 	public UrlContentCacheManager getUrlContentCacheManager() {
 		return myApplication.getUrlContentCacheManager();
 	}
-	
+
+	public boolean isNightMode() {
+		return nightMode;
+	}
+
 }

@@ -27,6 +27,7 @@
         android:title="@string/menu_fr"
         android:icon="@drawable/lang"/>
     
+    <!--  Recent posts -->
     <item
         android:id="@+id/menu_rss"
         android:showAsAction="ifRoom"
@@ -89,7 +90,20 @@
 		        android:icon="@drawable/event"/>
 		</menu>
 	</item>
+	
+    <!-- Mode switcher -->
+    <item
+        android:id="@+id/menu_mode_normal"
+        android:showAsAction="never"
+        android:title="@string/menu_mode_normal"
+        android:icon="@drawable/mode_normal"/>
     
+    <item
+        android:id="@+id/menu_mode_night"
+        android:showAsAction="never"
+        android:title="@string/menu_mode_night"
+        android:icon="@drawable/mode_night"/>
+
     <!-- About -->
     <item
         android:id="@+id/menu_about"

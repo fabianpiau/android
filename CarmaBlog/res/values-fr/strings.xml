@@ -17,7 +17,10 @@
     <string name="menu_agile_programming">Programmation Agile</string>
     <string name="menu_technology">Technologie</string>
     <string name="menu_linux">Linux</string>
-    <string name="menu_event">Ev&#233;nement</string>
+    <string name="menu_event">Ev&#232;nement</string>
+    
+    <string name="menu_mode_night">Mode nuit</string>
+    <string name="menu_mode_normal">Mode normal</string>
     <string name="menu_about">A propos</string>
     
     <string name="title_share">Partager cet article avec&#8230;</string>
@@ -32,9 +35,9 @@
     <string name="message_last_post">Dernier article atteint&#8230;</string>
     <string name="message_next_page">Page suivante: %1$d/%2$d &#8250;</string>
     <string name="message_previous_page">&#8249; Page pr&#233;c&#233;dente: %1$d/%2$d</string>
-    <string name="message_first_page">Premi&#233;re page atteinte&#8230;</string>
-    <string name="message_last_page">Derni&#233;re page atteinte&#8230;</string>
-     
+    <string name="message_first_page">Premi&#232;re page atteinte&#8230;</string>
+    <string name="message_last_page">Derni&#232;re page atteinte&#8230;</string>
+    
     <string name="rss_element_category">Cat&#233;gorie</string>
     <string name="rss_element_title">Titre de l\'article</string>
     <string name="rss_element_date">Date de publication</string>

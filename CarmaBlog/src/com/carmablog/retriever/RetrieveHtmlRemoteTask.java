@@ -60,6 +60,12 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
 		if (doc != null) {
 			// Add CSS to remove useless things
 			doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "android_style.css");
+			// Manage the reading mode with additional CSS
+			if (activity.isNightMode()) {
+				doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "night_style.css");
+			} else {
+				doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "normal_style.css");
+			}
 			// Get all info of the page
 			final UrlHtmlContent urlContent = new UrlHtmlContent();
 			urlContent.setUrl(url);
