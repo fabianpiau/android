@@ -48,3 +48,7 @@ div.sharedaddy a.sd-button {
     background-color: #F3F3F3 !important;
     border: 1px solid #DDDDDD !important;
 }
+
+DIV#socialmedia-container IMG {
+  opacity: 1;
+}
