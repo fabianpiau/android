@@ -2,6 +2,8 @@ package com.carmablog.retriever;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -65,6 +67,12 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
 				doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "night_style.css");
 			} else {
 				doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "normal_style.css");
+			}
+			// Update sources to add missing http
+			Elements images = doc.select("img[src^=//]");
+			for (Element image : images) {
+				String currentSrc = image.attr("src");
+				image.attr("src", "http:" + currentSrc);
 			}
 			// Get all info of the page
 			final UrlHtmlContent urlContent = new UrlHtmlContent();

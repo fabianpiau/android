@@ -3,8 +3,6 @@ package com.carmablog.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.protocol.HTTP;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -404,7 +402,7 @@ public class HtmlActivity extends Activity {
 	private Intent defineSharingIntent() {
 		
 		final Intent globalSharingIntent = new Intent();
-		globalSharingIntent.setType(HTTP.PLAIN_TEXT_TYPE);
+		globalSharingIntent.setType("text/plain");
 		globalSharingIntent.setAction(Intent.ACTION_SEND);
 		
 		final PackageManager packageManager = myWebView.getContext().getPackageManager();
@@ -416,7 +414,7 @@ public class HtmlActivity extends Activity {
 		
 	    for (final ResolveInfo app : activities) {
 			final Intent sharingIntent = new Intent();
-			sharingIntent.setType(HTTP.PLAIN_TEXT_TYPE);
+			sharingIntent.setType("text/plain");
 			sharingIntent.setAction(Intent.ACTION_SEND);
 	    	sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.id.menu_share));
 	    	final String packageName = app.activityInfo.packageName;
