@@ -60,7 +60,7 @@ public class RetrieveRssRemoteTask extends AsyncTask<String, Void, UrlRssContent
     	Document doc = null;
         try {
         	// Get the XML code with Jsoup
-        	doc = Jsoup.connect(url).parser(Parser.xmlParser()).get();
+			doc = Jsoup.connect(url).timeout(15 * 1000).followRedirects(true).validateTLSCertificates(false).parser(Parser.xmlParser()).get();
         } catch (Exception e) {
         	Log.e("Jsoup", "Cannot retrieve document. Check the URL: " + url + " is correct. Exception: " + e.getMessage());
         	exception = e;

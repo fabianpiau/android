@@ -54,8 +54,8 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
     	Document doc = null;
         try {
         	// Get the HTML code with Jsoup
-        	doc = Jsoup.connect(url).get();
-        } catch (Exception e) {
+			doc = Jsoup.connect(url).timeout(15 * 1000).followRedirects(true).validateTLSCertificates(false).get();
+		} catch (Exception e) {
         	Log.e("Jsoup", "Cannot retrieve document. Check the URL: " + url + " is correct. Exception: " + e.getMessage());
         	exception = e;
         }
@@ -68,7 +68,7 @@ public class RetrieveHtmlRemoteTask extends AsyncTask<String, Void, UrlHtmlConte
 			} else {
 				doc.head().appendElement("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", "normal_style.css");
 			}
-			// Update sources to add missing http
+			// Update src attribute of images to add missing prefix
 			Elements images = doc.select("img[src^=//]");
 			for (Element image : images) {
 				String currentSrc = image.attr("src");
